@@ -84,23 +84,6 @@ if (can(player, 'claim')) {
 
 The core is plain functions over plain data — no hooks, no stores, no framework adapter needed.
 
-### Effect
-
-An [Effect](https://effect.website)-flavoured invoker ships under the `affordant/effect` subpath (requires the optional peers `effect` and `@effect/platform`). It executes via `HttpClient` with `filterStatusOk` and decodes the response body against a `Schema`:
-
-```ts
-import { followEffect } from 'affordant/effect'
-import { Schema } from 'effect'
-
-const ClaimResult = Schema.Struct({ claimedAt: Schema.String })
-
-const program = followEffect(actionFor(player, 'claim')!, ClaimResult, {
-  token: redactedToken, // plain string or Redacted<string>
-})
-```
-
-Use `Schema.Unknown` when you only care about success/failure — it also makes `204 No Content` succeed cleanly.
-
 ## API
 
 | Export | Description |
@@ -110,7 +93,6 @@ Use `Schema.Unknown` when you only care about success/failure — it also makes 
 | `can(resource, rel)` | `true` iff the server currently offers `rel`. Null-safe. |
 | `actionFor(resource, rel)` | The action descriptor, or `null`. Null-safe. |
 | `follow(action, init?)` | Vanilla `fetch` invocation. `init`: `body`, `token` (string or lazy getter), `headers`, `signal`, `fetch` (injectable). Returns the raw `Response`. |
-| `followEffect(action, schema, init?)` | *(subpath `affordant/effect`)* Effect invocation with schema-decoded response. |
 
 ## Server side
 
@@ -118,6 +100,13 @@ Any backend that emits the `_self` / `_actions` envelope works. The rules that m
 
 - **Link visibility is authorization**: only emit an action the caller may execute, decided server-side per response.
 - **URLs come from your router** (named routes), never hardcoded — renaming a route updates every link.
+
+## Roadmap
+
+This package is the **vanilla core** — zero dependencies, no framework, no runtime coupling. Framework- and runtime-specific *declinations* ship as their own packages so the core stays installable anywhere with nothing dragged along:
+
+- React hooks (`useAction`, `useFollowQuery`)
+- An [Effect](https://effect.website)-flavoured invoker (schema-decoded responses, `Redacted` tokens)
 
 ## License
 

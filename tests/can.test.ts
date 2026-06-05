@@ -56,4 +56,18 @@ describe('actionFor', () => {
     expect(actionFor(null, 'claim')).toBeNull()
     expect(actionFor(undefined, 'claim')).toBeNull()
   })
+
+  it('returns null when _actions is missing', () => {
+    expect(actionFor({ name: 'x' } as never, 'claim')).toBeNull()
+  })
+
+  it('ignores inherited properties on _actions', () => {
+    const resource = {
+      name: 'x',
+      _actions: Object.create({
+        claim: { href: '/x', method: 'POST' },
+      }) as Record<string, never>,
+    }
+    expect(actionFor(resource, 'claim')).toBeNull()
+  })
 })

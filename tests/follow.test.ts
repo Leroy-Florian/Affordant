@@ -60,9 +60,11 @@ describe('follow', () => {
 
     await follow(get, { fetch, token: null })
     await follow(get, { fetch, token: () => null })
+    await follow(get, { fetch, token: () => undefined })
 
     expect(headersOf(calls[0]!).Authorization).toBeUndefined()
     expect(headersOf(calls[1]!).Authorization).toBeUndefined()
+    expect(headersOf(calls[2]!).Authorization).toBeUndefined()
   })
 
   it('JSON-encodes the body when the action accepts JSON (default)', async () => {
@@ -71,6 +73,16 @@ describe('follow', () => {
     await follow(post, { fetch, body: { note: 'gg' } })
 
     expect(headersOf(calls[0]!)['Content-Type']).toBe('application/json')
+    expect(calls[0]?.init?.body).toBe('{"note":"gg"}')
+  })
+
+  it('JSON-encodes the body for vendor JSON media types', async () => {
+    const { calls, fetch } = captureFetch()
+    const action: HateoasAction = { ...post, accepts: 'application/vnd.api+json' }
+
+    await follow(action, { fetch, body: { note: 'gg' } })
+
+    expect(headersOf(calls[0]!)['Content-Type']).toBe('application/vnd.api+json')
     expect(calls[0]?.init?.body).toBe('{"note":"gg"}')
   })
 
@@ -117,5 +129,19 @@ describe('follow', () => {
     const result = await follow(get, { fetch })
 
     expect(result).toBe(response)
+  })
+
+  it('falls back to globalThis.fetch when none is injected', async () => {
+    const { calls, fetch } = captureFetch()
+    const original = globalThis.fetch
+    globalThis.fetch = fetch
+    try {
+      await follow(get)
+    } finally {
+      globalThis.fetch = original
+    }
+
+    expect(calls[0]?.input).toBe('/players/kaelith')
+    expect(calls[0]?.init?.method).toBe('GET')
   })
 })
