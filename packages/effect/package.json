@@ -1,6 +1,6 @@
 {
   "name": "@affordant/effect",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Effect-flavoured invoker for Affordant: follow the server's affordances as an Effect with a typed error channel and fiber-interruptible requests.",
   "license": "MIT",
   "author": "Florian Leroy",
@@ -11,7 +11,13 @@
   },
   "homepage": "https://leroy-florian.github.io/Affordant/",
   "bugs": "https://github.com/Leroy-Florian/Affordant/issues",
-  "keywords": ["hateoas", "hypermedia", "affordance", "effect", "api-client"],
+  "keywords": [
+    "hateoas",
+    "hypermedia",
+    "affordance",
+    "effect",
+    "api-client"
+  ],
   "type": "module",
   "sideEffects": false,
   "main": "dist/index.js",
@@ -22,11 +28,15 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
-  "publishConfig": { "access": "public" },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
-    "affordant": "^0.1.0",
-    "@affordant/contract": "^0.1.0"
+    "affordant": "^0.2.0",
+    "@affordant/contract": "^0.2.0"
   },
   "peerDependencies": {
     "effect": "^3.21.0"
