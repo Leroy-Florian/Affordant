@@ -18,8 +18,8 @@ function captureFetch(response = new Response('{}')): { calls: Captured[]; fetch
 const headersOf = (c: Captured): Record<string, string> =>
   (c.init?.headers ?? {}) as Record<string, string>
 
-const get: HateoasAction = { href: '/players/kaelith', method: 'GET' }
-const post: HateoasAction = { href: '/players/kaelith/claim', method: 'POST' }
+const get: HateoasAction = { href: '/orders/8f3a2c', method: 'GET' }
+const post: HateoasAction = { href: '/orders/8f3a2c/cancel', method: 'POST' }
 
 describe('follow', () => {
   it('uses the href and method from the action descriptor', async () => {
@@ -27,7 +27,7 @@ describe('follow', () => {
 
     await follow(post, { fetch })
 
-    expect(calls[0]?.input).toBe('/players/kaelith/claim')
+    expect(calls[0]?.input).toBe('/orders/8f3a2c/cancel')
     expect(calls[0]?.init?.method).toBe('POST')
   })
 
@@ -70,20 +70,20 @@ describe('follow', () => {
   it('JSON-encodes the body when the action accepts JSON (default)', async () => {
     const { calls, fetch } = captureFetch()
 
-    await follow(post, { fetch, body: { note: 'gg' } })
+    await follow(post, { fetch, body: { reason: 'changed my mind' } })
 
     expect(headersOf(calls[0]!)['Content-Type']).toBe('application/json')
-    expect(calls[0]?.init?.body).toBe('{"note":"gg"}')
+    expect(calls[0]?.init?.body).toBe('{"reason":"changed my mind"}')
   })
 
   it('JSON-encodes the body for vendor JSON media types', async () => {
     const { calls, fetch } = captureFetch()
     const action: HateoasAction = { ...post, accepts: 'application/vnd.api+json' }
 
-    await follow(action, { fetch, body: { note: 'gg' } })
+    await follow(action, { fetch, body: { reason: 'changed my mind' } })
 
     expect(headersOf(calls[0]!)['Content-Type']).toBe('application/vnd.api+json')
-    expect(calls[0]?.init?.body).toBe('{"note":"gg"}')
+    expect(calls[0]?.init?.body).toBe('{"reason":"changed my mind"}')
   })
 
   it('passes the body through untouched for non-JSON accepts', async () => {
@@ -141,7 +141,7 @@ describe('follow', () => {
       globalThis.fetch = original
     }
 
-    expect(calls[0]?.input).toBe('/players/kaelith')
+    expect(calls[0]?.input).toBe('/orders/8f3a2c')
     expect(calls[0]?.init?.method).toBe('GET')
   })
 })

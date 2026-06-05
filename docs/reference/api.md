@@ -1,0 +1,126 @@
+# API reference
+
+Everything is exported from the package root:
+
+```ts
+import {
+  can,
+  actionFor,
+  follow,
+  type HateoasResource,
+  type HateoasAction,
+  type HateoasMethod,
+  type FollowInit,
+  type BearerToken,
+} from 'affordant'
+```
+
+## Types
+
+### `HateoasMethod`
+
+```ts
+type HateoasMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+```
+
+The HTTP verbs an action can carry.
+
+### `HateoasAction`
+
+```ts
+interface HateoasAction {
+  href: string
+  method: HateoasMethod
+  accepts?: string
+}
+```
+
+A hypermedia action descriptor: where (`href`), how (`method`), and optionally what request body it accepts (`accepts`, a media type — defaults to `application/json` when omitted).
+
+### `HateoasResource<T>`
+
+```ts
+type HateoasResource<T> = T & {
+  _self?: HateoasAction
+  _actions: Record<string, HateoasAction>
+}
+```
+
+Your resource `T`, enriched with hypermedia controls. `_actions` maps a link relation (rel) to the action the server is currently offering. An absent rel means the action is not available to the caller right now.
+
+## Functions
+
+### `can`
+
+```ts
+function can<T>(resource: HateoasResource<T> | null | undefined, rel: string): boolean
+```
+
+Affordance predicate: is the server currently offering `rel` on this resource? Drives conditional UI without duplicating authorization rules client-side.
+
+- Returns `false` for `null` / `undefined` resources and for resources without `_actions`.
+- Only own properties of `_actions` count — inherited properties are ignored.
+
+```ts
+can(order, 'cancel') // → true | false
+```
+
+### `actionFor`
+
+```ts
+function actionFor<T>(
+  resource: HateoasResource<T> | null | undefined,
+  rel: string,
+): HateoasAction | null
+```
+
+Returns the action descriptor for `rel`, or `null` when the server did not offer it. Same null-safety as `can`.
+
+```ts
+const action = actionFor(order, 'cancel')
+// → { href: '/orders/8f3a2c/cancel', method: 'POST' } | null
+```
+
+### `follow`
+
+```ts
+function follow(action: HateoasAction, init?: FollowInit): Promise<Response>
+```
+
+Invokes a hypermedia action with vanilla `fetch`. It builds the request from the action descriptor (`method` + `href` + `accepts`), injects the bearer token if provided, and JSON-encodes the body when the action accepts JSON. Returns the raw `Response` — you decide how to read it.
+
+```ts
+const res = await follow(actionFor(order, 'cancel')!, {
+  token: () => localStorage.getItem('token'),
+  body: { reason: 'changed my mind' },
+})
+if (res.ok) { /* … */ }
+```
+
+#### `FollowInit`
+
+```ts
+interface FollowInit {
+  body?: unknown
+  token?: BearerToken | null
+  headers?: Record<string, string>
+  signal?: AbortSignal
+  fetch?: typeof globalThis.fetch
+}
+```
+
+| Field | Behaviour |
+|---|---|
+| `body` | When set, sent as the request body. JSON-encoded if the action's `accepts` is a JSON media type (the default), otherwise passed through untouched. When omitted, no body and no `Content-Type` are sent. |
+| `token` | Bearer token, added as `Authorization: Bearer <token>`. Omitted when falsy (see `BearerToken`). |
+| `headers` | Extra request headers. They override Affordant's defaults (e.g. `Accept`). |
+| `signal` | An `AbortSignal`, forwarded to `fetch`. |
+| `fetch` | A custom `fetch` implementation (SSR, polyfills, testing). Defaults to `globalThis.fetch`. |
+
+#### `BearerToken`
+
+```ts
+type BearerToken = string | (() => string | null | undefined)
+```
+
+A plain string, or a **lazy getter** invoked at request time. The getter lets auth layers hand out short-lived tokens without coupling to any framework or secret-wrapping library. When the value (or the getter's result) is `null` / `undefined`, no `Authorization` header is sent.
