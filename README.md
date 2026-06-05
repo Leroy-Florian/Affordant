@@ -26,9 +26,17 @@ This repo is an npm-workspaces monorepo. One shared contract, symmetric on each 
 | Package | Side | What it does |
 |---|---|---|
 | [`@affordant/contract`](packages/contract) | shared | The wire-contract types. Zero runtime, zero deps. Everything else depends on it. |
-| [`affordant`](packages/client) | client | `can` / `actionFor` / `follow` — gate UI on what the server offers. Zero deps. |
+| [`affordant`](packages/client) | client | `can` / `actionFor` / `follow` — gate UI on what the server offers. Zero deps. The vanilla (Promise) invoker. |
+| [`@affordant/effect`](packages/effect) | client | The [Effect](https://effect.website)-flavoured invoker: `follow` as an `Effect` with a typed error channel. |
+| [`@affordant/react`](packages/react) | client | React adapter: gate UI on affordances and invoke them with **either** invoker (Promise or Effect). |
 | [`@affordant/server`](packages/server) | server | A builder that emits the `_self` / `_actions` envelope. Framework-agnostic. |
 | [`@affordant/express`](packages/express) | server | Express adapter: send the envelope and build URLs from the request. |
+
+Plus one **domain-agnostic** package that lives here for convenience but is coupled to React + Effect, not to the wire contract:
+
+| Package | Side | What it does |
+|---|---|---|
+| [`effect-react-bridge`](packages/effect-react-bridge) | client | Run Effect programs inside React (query / imperative hooks + `RemoteData`). No hypermedia, no Affordant coupling. |
 
 ```
                  ┌─ @affordant/contract (shared wire types) ─┐
@@ -67,6 +75,23 @@ resource(order)
 
 The `when` predicate *is* the authorization: when it's false, the rel is never emitted, so `can(order, 'cancel')` returns false on the client.
 
+## Two orthogonal axes on the client
+
+Consuming an affordance has two independent choices: the **UI framework** (React, …) and the **effect system** (vanilla `Promise` or `Effect`). They compose instead of multiplying — everything pure (`can`, `actionFor`, the server builder) is effect-agnostic by construction, so the only seam is the invoker:
+
+```ts
+// the invoker is the single point of variation
+type Invoker<F> = (action: HateoasAction, init?: FollowInit) => F
+// affordant       → Invoker<Promise<Response>>
+// @affordant/effect → Invoker<Effect<Response, FollowError>>
+```
+
+`@affordant/react` is built against that seam: `useFollow` from `@affordant/react` uses the Promise invoker; `makeAffordanceHooks` from `@affordant/react/effect` runs the Effect invoker through the [`effect-react-bridge`](packages/effect-react-bridge) runtime. The bridge stays generic — it knows nothing about hypermedia.
+
+## A package belongs here iff it is coupled to the wire contract
+
+That single rule decides membership. `@affordant/effect` and `@affordant/react` depend on the contract → they live in the family. `effect-react-bridge` depends on React + Effect but **not** the contract → it is an independent publication that merely shares this workspace.
+
 ## Develop
 
 ```sh
@@ -80,7 +105,7 @@ npm run typecheck  # type-checks every package
 
 Each side grows by **declinations**, every one its own package so the cores stay dependency-free:
 
-- client: React hooks, Vue composables, …
+- client: Vue composables, Svelte stores, more invokers, …
 - server: more framework adapters (Fastify, Nest, Hono, …).
 
 ## License

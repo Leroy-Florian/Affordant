@@ -15,18 +15,28 @@
   "workspaces": [
     "packages/contract",
     "packages/client",
+    "packages/effect-react-bridge",
+    "packages/effect",
+    "packages/react",
     "packages/server",
     "packages/express"
   ],
   "scripts": {
-    "build": "npm run build -w @affordant/contract && npm run build -w affordant && npm run build -w @affordant/server && npm run build -w @affordant/express",
-    "typecheck": "npm run build -w @affordant/contract && npm run typecheck --workspaces --if-present",
+    "build": "npm run build -w @affordant/contract && npm run build -w affordant && npm run build -w effect-react-bridge && npm run build -w @affordant/effect && npm run build -w @affordant/react && npm run build -w @affordant/server && npm run build -w @affordant/express",
+    "typecheck": "npm run build && npm run typecheck --workspaces --if-present",
     "test": "vitest run",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
+    "@testing-library/react": "^16.1.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "effect": "^3.21.0",
+    "jsdom": "^25.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "typescript": "^6.0.3",
     "vitepress": "^1.6.4",
     "vitest": "^4.1.8"
