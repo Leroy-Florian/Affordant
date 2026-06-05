@@ -52,9 +52,7 @@ return {
 
 ## Any language, any stack
 
-The envelope is the only contract — `@affordant/server` is a convenience, not a requirement. A backend in **pure Node JS** can emit it with a plain object literal and no Affordant dependency at all. So can a backend in **any other language**: Python, Go, Ruby, or **.NET**. The client only cares about the `_self` / `_actions` JSON it receives.
-
-That makes a companion library on another stack a natural fit. A .NET package that builds the same envelope from your controllers — gating each link on `User`, resource state, and feature flags, with `href` from named routes — would interoperate with the `affordant` client byte-for-byte, exactly like `@affordant/server` does. The wire contract is the integration point; the helper on each side is just ergonomics.
+The envelope is the only contract — `@affordant/server` is a convenience, not a requirement. A backend in **pure Node JS** can emit it with a plain object literal and no Affordant dependency at all. So can a backend in **any other language**: Python, Go, Ruby, .NET. The client only cares about the `_self` / `_actions` JSON it receives, so a companion helper on any stack is just ergonomics over the same wire contract.
 
 ## Checklist for emitting the envelope
 
