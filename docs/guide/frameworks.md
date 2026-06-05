@@ -46,4 +46,6 @@ if (can(order, 'cancel')) {
 
 `can` and `actionFor` are pure, synchronous, null-safe reads over the resource you already hold. There is nothing to wire into a component lifecycle — you call them inline wherever you render. `follow` is a single `fetch` call returning a `Response`, so it composes with whatever data layer you already use (TanStack Query, SWR, a plain `await`, a Svelte store…).
 
-Framework-specific *declinations* — React hooks like `useAction` / `useFollowQuery`, and an [Effect](https://effect.website)-flavoured invoker — ship as their own packages, so the core stays installable anywhere with nothing dragged along.
+## Today, the core is all you need
+
+Affordant ships **only the framework-agnostic core** right now. There are no React/Vue/Svelte packages to install, and none are required — the examples above are the whole story. Optional *declinations* (for example a set of React hooks, or an [Effect](https://effect.website)-flavoured invoker) may ship later as separate packages, but they are not published yet, and the core will never depend on them.

@@ -106,10 +106,9 @@ Any backend that emits the `_self` / `_actions` envelope works. The rules that m
 
 ## Roadmap
 
-This package is the **vanilla core** — zero dependencies, no framework, no runtime coupling. Framework- and runtime-specific *declinations* ship as their own packages so the core stays installable anywhere with nothing dragged along:
+Affordant currently ships **only the vanilla core** — zero dependencies, no framework packages, no runtime coupling. That core is the whole library today, and it works in any framework as shown above.
 
-- React hooks (`useAction`, `useFollowQuery`)
-- An [Effect](https://effect.website)-flavoured invoker (schema-decoded responses, `Redacted` tokens)
+Optional *declinations* may follow later, each as its own package so the core stays dependency-free — for example a set of React hooks, or an [Effect](https://effect.website)-flavoured invoker. None of these are published yet.
 
 ## License
 
