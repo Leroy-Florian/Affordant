@@ -1,0 +1,59 @@
+{
+  "name": "affordant",
+  "version": "0.1.0",
+  "description": "Affordance-first hypermedia (HATEOAS) client. Zero-dependency core: read the actions the server offers, gate your UI on them, follow them.",
+  "license": "MIT",
+  "author": "Florian Leroy",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Leroy-Florian/Affordant.git"
+  },
+  "keywords": [
+    "hateoas",
+    "hypermedia",
+    "affordance",
+    "rest",
+    "richardson-maturity-model",
+    "api-client"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./effect": {
+      "types": "./dist/effect/index.d.ts",
+      "import": "./dist/effect/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "@effect/platform": "^0.96.0",
+    "effect": "^3.21.0"
+  },
+  "peerDependenciesMeta": {
+    "@effect/platform": {
+      "optional": true
+    },
+    "effect": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@effect/platform": "^0.96.1",
+    "effect": "^3.21.3",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}
