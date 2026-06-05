@@ -1,73 +1,74 @@
 import { describe, expect, it } from 'vitest'
 import { actionFor, can, type HateoasResource } from '../src/index.js'
 
-type Player = { name: string }
+type Order = { id: string; total: number }
 
-const player: HateoasResource<Player> = {
-  name: 'Kaelith',
-  _self: { href: '/players/kaelith', method: 'GET' },
+const order: HateoasResource<Order> = {
+  id: '8f3a2c',
+  total: 4200,
+  _self: { href: '/orders/8f3a2c', method: 'GET' },
   _actions: {
-    claim: { href: '/players/kaelith/claim', method: 'POST' },
+    cancel: { href: '/orders/8f3a2c/cancel', method: 'POST' },
   },
 }
 
 describe('can', () => {
   it('returns true when the server offers the rel', () => {
-    expect(can(player, 'claim')).toBe(true)
+    expect(can(order, 'cancel')).toBe(true)
   })
 
   it('returns false when the rel is absent', () => {
-    expect(can(player, 'delete')).toBe(false)
+    expect(can(order, 'refund')).toBe(false)
   })
 
   it('returns false for null or undefined resources', () => {
-    expect(can(null, 'claim')).toBe(false)
-    expect(can(undefined, 'claim')).toBe(false)
+    expect(can(null, 'cancel')).toBe(false)
+    expect(can(undefined, 'cancel')).toBe(false)
   })
 
   it('returns false when _actions is missing', () => {
-    expect(can({ name: 'x' } as never, 'claim')).toBe(false)
+    expect(can({ id: 'x' } as never, 'cancel')).toBe(false)
   })
 
   it('ignores inherited properties on _actions', () => {
     const resource = {
-      name: 'x',
+      id: 'x',
       _actions: Object.create({
-        claim: { href: '/x', method: 'POST' },
+        cancel: { href: '/x', method: 'POST' },
       }) as Record<string, never>,
     }
-    expect(can(resource, 'claim')).toBe(false)
+    expect(can(resource, 'cancel')).toBe(false)
   })
 })
 
 describe('actionFor', () => {
   it('returns the descriptor when offered', () => {
-    expect(actionFor(player, 'claim')).toEqual({
-      href: '/players/kaelith/claim',
+    expect(actionFor(order, 'cancel')).toEqual({
+      href: '/orders/8f3a2c/cancel',
       method: 'POST',
     })
   })
 
   it('returns null when not offered', () => {
-    expect(actionFor(player, 'delete')).toBeNull()
+    expect(actionFor(order, 'refund')).toBeNull()
   })
 
   it('returns null for null or undefined resources', () => {
-    expect(actionFor(null, 'claim')).toBeNull()
-    expect(actionFor(undefined, 'claim')).toBeNull()
+    expect(actionFor(null, 'cancel')).toBeNull()
+    expect(actionFor(undefined, 'cancel')).toBeNull()
   })
 
   it('returns null when _actions is missing', () => {
-    expect(actionFor({ name: 'x' } as never, 'claim')).toBeNull()
+    expect(actionFor({ id: 'x' } as never, 'cancel')).toBeNull()
   })
 
   it('ignores inherited properties on _actions', () => {
     const resource = {
-      name: 'x',
+      id: 'x',
       _actions: Object.create({
-        claim: { href: '/x', method: 'POST' },
+        cancel: { href: '/x', method: 'POST' },
       }) as Record<string, never>,
     }
-    expect(actionFor(resource, 'claim')).toBeNull()
+    expect(actionFor(resource, 'cancel')).toBeNull()
   })
 })
