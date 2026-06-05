@@ -24,10 +24,6 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    },
-    "./effect": {
-      "types": "./dist/effect/index.d.ts",
-      "import": "./dist/effect/index.js"
     }
   },
   "files": [
@@ -38,21 +34,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
-  "peerDependencies": {
-    "@effect/platform": "^0.96.0",
-    "effect": "^3.21.0"
-  },
-  "peerDependenciesMeta": {
-    "@effect/platform": {
-      "optional": true
-    },
-    "effect": {
-      "optional": true
-    }
-  },
   "devDependencies": {
-    "@effect/platform": "^0.96.1",
-    "effect": "^3.21.3",
     "typescript": "^6.0.3",
     "vitest": "^4.1.8"
   }
