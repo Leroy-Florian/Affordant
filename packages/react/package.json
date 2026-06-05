@@ -27,6 +27,7 @@
     }
   },
   "files": ["dist"],
+  "publishConfig": { "access": "public" },
   "dependencies": {
     "affordant": "^0.1.0",
     "@affordant/contract": "^0.1.0"
