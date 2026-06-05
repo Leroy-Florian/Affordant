@@ -8,6 +8,8 @@
     "type": "git",
     "url": "https://github.com/Leroy-Florian/Affordant.git"
   },
+  "homepage": "https://leroy-florian.github.io/Affordant/",
+  "bugs": "https://github.com/Leroy-Florian/Affordant/issues",
   "keywords": [
     "hateoas",
     "hypermedia",
@@ -33,6 +35,7 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "prepublishOnly": "npm run build",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
