@@ -1,6 +1,6 @@
 {
   "name": "effect-react-bridge",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Run Effect programs inside React: query and imperative hooks with fiber lifecycle management, plus a RemoteData view model. Domain-agnostic — no hypermedia, no Affordant coupling.",
   "license": "MIT",
   "author": "Florian Leroy",
@@ -11,7 +11,13 @@
   },
   "homepage": "https://leroy-florian.github.io/Affordant/",
   "bugs": "https://github.com/Leroy-Florian/Affordant/issues",
-  "keywords": ["effect", "react", "hooks", "fiber", "remote-data"],
+  "keywords": [
+    "effect",
+    "react",
+    "hooks",
+    "fiber",
+    "remote-data"
+  ],
   "type": "module",
   "sideEffects": false,
   "main": "dist/index.js",
@@ -22,7 +28,9 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "peerDependencies": {
     "effect": "^3.21.0",
     "react": ">=18"

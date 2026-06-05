@@ -1,6 +1,6 @@
 {
   "name": "@affordant/express",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Express adapter for Affordant: send the hypermedia envelope from your controllers and build absolute action URLs from the request.",
   "license": "MIT",
   "author": "Florian Leroy",
@@ -11,7 +11,13 @@
   },
   "homepage": "https://leroy-florian.github.io/Affordant/",
   "bugs": "https://github.com/Leroy-Florian/Affordant/issues",
-  "keywords": ["hateoas", "hypermedia", "affordance", "express", "node"],
+  "keywords": [
+    "hateoas",
+    "hypermedia",
+    "affordance",
+    "express",
+    "node"
+  ],
   "type": "module",
   "sideEffects": false,
   "main": "dist/index.js",
@@ -22,10 +28,14 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
-  "publishConfig": { "access": "public" },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
-    "@affordant/server": "^0.1.0"
+    "@affordant/server": "^0.2.0"
   },
   "peerDependencies": {
     "express": ">=4"
