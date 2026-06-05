@@ -1,7 +1,8 @@
 {
-  "name": "affordant",
-  "version": "0.1.0",
-  "description": "Affordance-first hypermedia (HATEOAS) client. Zero-dependency core: read the actions the server offers, gate your UI on them, follow them.",
+  "name": "affordant-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Affordance-first hypermedia (HATEOAS) toolkit: shared wire contract, vanilla client, server-side envelope builder, and framework adapters.",
   "license": "MIT",
   "author": "Florian Leroy",
   "repository": {
@@ -10,33 +11,17 @@
   },
   "homepage": "https://leroy-florian.github.io/Affordant/",
   "bugs": "https://github.com/Leroy-Florian/Affordant/issues",
-  "keywords": [
-    "hateoas",
-    "hypermedia",
-    "affordance",
-    "rest",
-    "richardson-maturity-model",
-    "api-client"
-  ],
   "type": "module",
-  "sideEffects": false,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
-  },
-  "files": [
-    "dist"
+  "workspaces": [
+    "packages/contract",
+    "packages/client",
+    "packages/server",
+    "packages/express"
   ],
   "scripts": {
-    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
-    "build": "npm run clean && tsc -p tsconfig.build.json",
-    "typecheck": "tsc --noEmit",
+    "build": "npm run build -w @affordant/contract && npm run build -w affordant && npm run build -w @affordant/server && npm run build -w @affordant/express",
+    "typecheck": "npm run build -w @affordant/contract && npm run typecheck --workspaces --if-present",
     "test": "vitest run",
-    "prepublishOnly": "npm run build",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"

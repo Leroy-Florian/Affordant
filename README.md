@@ -1,114 +1,87 @@
 # Affordant
 
-**Affordance-first hypermedia (HATEOAS) client.** Stop re-implementing your authorization rules in the frontend — let the actions the server offers drive your UI.
+**Affordance-first hypermedia (HATEOAS), both sides of the wire.** Stop re-implementing your authorization rules in the frontend — let the actions the server offers drive your UI, and let the server declare those actions once.
 
-Your frontend never builds a URL, never picks an HTTP verb, never duplicates an authorization rule. It asks three questions:
-
-1. *What is the server offering me?* → `can(resource, rel)`
-2. *Where / how?* → `actionFor(resource, rel)`
-3. *Do it.* → `follow(action, init)`
-
-If the backend stops offering an action (not authorized, wrong state, feature off), the button disappears — no frontend deploy.
-
-> Zero-dependency core. Runs anywhere `fetch` exists: browsers, Node ≥ 18, Deno, Bun, edge workers. No hooks, no stores, no framework adapter.
-
-## The wire contract
-
-The server enriches its responses with `_self` and `_actions`, where each action is `{ href, method, accepts? }` and the **presence of a rel encodes permission**:
+The server enriches each response with `_self` and `_actions`; the **presence of a rel encodes permission**. The client renders a button off the *presence* of the link — it never re-derives "can this user do X?".
 
 ```jsonc
-// GET /orders/8f3a2c — anonymous caller
+// GET /orders/8f3a2c — the order's owner
 {
   "id": "8f3a2c",
-  "total": 4200,
-  "status": "shipped",
+  "status": "pending",
   "_self":    { "href": "/orders/8f3a2c", "method": "GET" },
   "_actions": {
-    "track": { "href": "/orders/8f3a2c/tracking", "method": "GET" }
+    "track":  { "href": "/orders/8f3a2c/tracking", "method": "GET" },
+    "cancel": { "href": "/orders/8f3a2c/cancel",   "method": "POST" }
   }
 }
-
-// same request, the order's owner → one more affordance
-  "_actions": {
-    "track":  { "href": "...", "method": "GET" },
-    "cancel": { "href": "/orders/8f3a2c/cancel", "method": "POST" }
-  }
 ```
 
-The owner gets a `cancel` link; everyone else simply doesn't. The frontend renders the cancel button off the *presence* of that link — it never re-derives "can this user cancel?".
+Anyone who isn't the owner simply doesn't get the `cancel` link — and the frontend's cancel button vanishes, with no deploy.
 
-## Install
+## The packages
 
-```sh
-npm install affordant
+This repo is an npm-workspaces monorepo. One shared contract, symmetric on each side of the wire:
+
+| Package | Side | What it does |
+|---|---|---|
+| [`@affordant/contract`](packages/contract) | shared | The wire-contract types. Zero runtime, zero deps. Everything else depends on it. |
+| [`affordant`](packages/client) | client | `can` / `actionFor` / `follow` — gate UI on what the server offers. Zero deps. |
+| [`@affordant/server`](packages/server) | server | A builder that emits the `_self` / `_actions` envelope. Framework-agnostic. |
+| [`@affordant/express`](packages/express) | server | Express adapter: send the envelope and build URLs from the request. |
+
+```
+                 ┌─ @affordant/contract (shared wire types) ─┐
+                 │                                           │
+   @affordant/server  ──builds──►  _self / _actions  ──reads──►  affordant
+        │                                                          │
+   @affordant/express                                        (React / Vue / … )
 ```
 
-## Usage
+The `build()` on the server produces exactly what `can()` consumes on the client — one contract, never two implementations to keep in sync.
 
-### Vanilla
+## Client, in one glance
 
 ```ts
-import { can, actionFor, follow, type HateoasResource } from 'affordant'
-
-type Order = { id: string; total: number; status: string }
-const order: HateoasResource<Order> = await fetch('/orders/8f3a2c').then(r => r.json())
+import { can, actionFor, follow } from 'affordant'
 
 if (can(order, 'cancel')) {
-  await follow(actionFor(order, 'cancel')!, {
-    token: () => localStorage.getItem('token'), // lazy getter, read at request time
-    body: { reason: 'changed my mind' },        // JSON-encoded per the action's `accepts`
-  })
+  await follow(actionFor(order, 'cancel')!, { token, body: { reason: 'changed my mind' } })
 }
 ```
 
-### React
+## Server, in one glance
 
-```tsx
-{can(order, 'cancel') && (
-  <button onClick={() => follow(actionFor(order, 'cancel')!, { token })}>
-    Cancel order
-  </button>
-)}
+```ts
+import { resource } from '@affordant/server'
+
+resource(order)
+  .self(route('orders.show', order.id))
+  .action('track', route('orders.tracking', order.id))
+  .action('cancel', route('orders.cancel', order.id), {
+    method: 'POST',
+    when: caller.id === order.ownerId && order.status !== 'shipped', // absent ⇒ no permission
+  })
+  .build()
 ```
 
-### Vue
+The `when` predicate *is* the authorization: when it's false, the rel is never emitted, so `can(order, 'cancel')` returns false on the client.
 
-```vue
-<button v-if="can(order, 'cancel')" @click="cancel">Cancel order</button>
+## Develop
+
+```sh
+npm install        # installs all workspaces
+npm run build      # builds every package (contract first)
+npm test           # runs every package's tests
+npm run typecheck  # type-checks every package
 ```
-
-### Svelte
-
-```svelte
-{#if can(order, 'cancel')}
-  <button onclick={cancel}>Cancel order</button>
-{/if}
-```
-
-The core is plain functions over plain data — no hooks, no stores, no framework adapter needed.
-
-## API
-
-| Export | Description |
-|---|---|
-| `HateoasResource<T>` | `T & { _self?: HateoasAction; _actions: Record<string, HateoasAction> }` |
-| `HateoasAction` | `{ href: string; method: HateoasMethod; accepts?: string }` |
-| `can(resource, rel)` | `true` iff the server currently offers `rel`. Null-safe. |
-| `actionFor(resource, rel)` | The action descriptor, or `null`. Null-safe. |
-| `follow(action, init?)` | Vanilla `fetch` invocation. `init`: `body`, `token` (string or lazy getter), `headers`, `signal`, `fetch` (injectable). Returns the raw `Response`. |
-
-## Server side
-
-Any backend that emits the `_self` / `_actions` envelope works. The rules that make it worth it:
-
-- **Link visibility is authorization**: only emit an action the caller may execute, decided server-side per response.
-- **URLs come from your router** (named routes), never hardcoded — renaming a route updates every link.
 
 ## Roadmap
 
-Affordant currently ships **only the vanilla core** — zero dependencies, no framework packages, no runtime coupling. That core is the whole library today, and it works in any framework as shown above.
+Each side grows by **declinations**, every one its own package so the cores stay dependency-free:
 
-Optional *declinations* may follow later, each as its own package so the core stays dependency-free — for example a set of React hooks, or an [Effect](https://effect.website)-flavoured invoker. None of these are published yet.
+- client: React hooks, Vue composables, …
+- server: more framework adapters (Fastify, Nest, Hono, …).
 
 ## License
 

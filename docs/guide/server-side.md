@@ -1,31 +1,54 @@
 # Server side
 
-Affordant is a *consumer*. Any backend — any language, any framework — that emits the `_self` / `_actions` envelope works. Two rules make it worth the effort.
+Affordant is symmetric. The client reads the `_self` / `_actions` envelope; the server emits it. Any backend — any language, any framework — that emits the envelope works, but in Node you don't have to hand-roll it: [`@affordant/server`](https://www.npmjs.com/package/@affordant/server) is the server-side mirror of the client.
+
+Two rules make it worth the effort.
 
 ## 1. Link visibility is authorization
 
 Only emit an action the caller may execute, decided **server-side, per response**. The endpoint that builds the resource already knows the caller's identity, the resource's state, and the active feature flags — so it is the right place to decide which actions to expose.
 
+With `@affordant/server`, you declare each affordance once and gate it with `when`:
+
 ```ts
-// pseudo-controller
-function serializeOrder(order, caller) {
-  const actions: Record<string, HateoasAction> = {
-    track: { href: route('orders.tracking', order.id), method: 'GET' },
-  }
+import { resource } from '@affordant/server'
 
-  if (caller.id === order.ownerId && order.status !== 'shipped') {
-    actions.cancel = { href: route('orders.cancel', order.id), method: 'POST' }
-  }
-
-  return { ...order, _self: { href: route('orders.show', order.id), method: 'GET' }, _actions: actions }
+function serializeOrder(order, caller, route) {
+  return resource(order)
+    .self(route('orders.show', order.id))
+    .action('track', route('orders.tracking', order.id))
+    .action('cancel', route('orders.cancel', order.id), {
+      method: 'POST',
+      when: caller.id === order.ownerId && order.status !== 'shipped',
+    })
+    .build()
 }
 ```
 
-The frontend never re-implements that `if`. It asks `can(order, 'cancel')`.
+When `when` is `false`, the rel is **not emitted** — so the client's `can(order, 'cancel')` returns `false`. The frontend never re-implements that `if`. Presence of the link *is* the permission.
 
 ## 2. URLs come from your router
 
 Generate every `href` from a **named route**, never a hardcoded string. Renaming or remounting a route then updates every link automatically, and clients follow along without a deploy.
+
+That `route(...)` function is the one framework-coupled piece, so it stays injected — keeping `@affordant/server` framework-agnostic. Thin adapters wire it up:
+
+- [`@affordant/express`](https://www.npmjs.com/package/@affordant/express) sends the envelope from a controller and builds absolute URLs from the request.
+- More adapters (Fastify, Nest, Hono, …) follow the same shape.
+
+## Doing it by hand
+
+You never *have* to use `@affordant/server`. Any code that returns the shape below is a valid producer:
+
+```ts
+return {
+  ...order,
+  _self: { href: route('orders.show', order.id), method: 'GET' },
+  _actions: caller.id === order.ownerId
+    ? { cancel: { href: route('orders.cancel', order.id), method: 'POST' } }
+    : {},
+}
+```
 
 ## Checklist for emitting the envelope
 
