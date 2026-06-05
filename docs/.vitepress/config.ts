@@ -4,7 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'Affordant',
   description:
-    'Affordance-first hypermedia (HATEOAS) client. Zero-dependency core: read the actions the server offers, gate your UI on them, follow them.',
+    'Affordance-first hypermedia (HATEOAS), both sides of the wire. A shared contract, a zero-dependency client, a server-side envelope builder, and React / Effect declinations.',
   // Deployed to https://<user>.github.io/Affordant/ — change to '/' for a custom domain.
   base: '/Affordant/',
   cleanUrls: true,
@@ -12,7 +12,7 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
-      { text: 'API', link: '/reference/api' },
+      { text: 'Reference', link: '/reference/api' },
       { text: 'npm', link: 'https://www.npmjs.com/package/affordant' },
     ],
     sidebar: {
@@ -21,7 +21,9 @@ export default defineConfig({
           text: 'Guide',
           items: [
             { text: 'Getting started', link: '/guide/getting-started' },
+            { text: 'The packages', link: '/guide/packages' },
             { text: 'The wire contract', link: '/guide/wire-contract' },
+            { text: 'Invokers: Promise & Effect', link: '/guide/invokers' },
             { text: 'Framework usage', link: '/guide/frameworks' },
             { text: 'Server side', link: '/guide/server-side' },
           ],
@@ -29,8 +31,23 @@ export default defineConfig({
       ],
       '/reference/': [
         {
-          text: 'Reference',
-          items: [{ text: 'API', link: '/reference/api' }],
+          text: 'Client',
+          items: [
+            { text: 'affordant', link: '/reference/api' },
+            { text: '@affordant/effect', link: '/reference/effect' },
+            { text: '@affordant/react', link: '/reference/react' },
+          ],
+        },
+        {
+          text: 'Server',
+          items: [{ text: '@affordant/server', link: '/reference/server' }],
+        },
+        {
+          text: 'Shared',
+          items: [
+            { text: '@affordant/contract', link: '/reference/contract' },
+            { text: 'effect-react-bridge', link: '/reference/effect-react-bridge' },
+          ],
         },
       ],
     },

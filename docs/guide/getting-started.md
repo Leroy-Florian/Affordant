@@ -40,8 +40,20 @@ if (can(order, 'cancel')) {
 - **No hardcoded URLs or verbs.** The `href` and `method` come from the response. Rename a route on the server and every client follows along.
 - **The button tracks reality.** When the server stops offering an action, `can()` returns `false` and the control disappears — with no frontend deploy.
 
+## More than the client
+
+`affordant` is the vanilla client, but it is one of a small family sharing a single wire contract:
+
+- [`@affordant/server`](/reference/server) builds the envelope on the backend — the mirror of `can()`.
+- [`@affordant/effect`](/reference/effect) is a second, interchangeable invoker returning an `Effect`.
+- [`@affordant/react`](/reference/react) wraps the calls as hooks (with either invoker).
+
+See [the packages](/guide/packages) for the whole map, or just keep using the vanilla calls above — they work everywhere.
+
 ## Next steps
 
+- Tour [the packages](/guide/packages) and how they fit together.
 - Understand [the wire contract](/guide/wire-contract) the server emits.
+- Learn the two [invokers — Promise & Effect](/guide/invokers).
 - See [framework usage](/guide/frameworks) for React, Vue, Svelte, and vanilla.
 - Read the full [API reference](/reference/api).

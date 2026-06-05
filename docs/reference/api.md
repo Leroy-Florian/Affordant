@@ -1,4 +1,6 @@
-# API reference
+# `affordant`
+
+The vanilla client and the **Promise** [invoker](/guide/invokers). Zero runtime dependencies. For the other packages, see [`@affordant/effect`](/reference/effect), [`@affordant/react`](/reference/react), [`@affordant/server`](/reference/server), and the shared [`@affordant/contract`](/reference/contract).
 
 Everything is exported from the package root:
 
