@@ -1,4 +1,4 @@
-import type { HateoasAction, HateoasResource } from './types.js'
+import type { HateoasAction, HateoasResource } from '@affordant/contract'
 
 /**
  * Affordance predicate: is the server currently offering `rel` on this

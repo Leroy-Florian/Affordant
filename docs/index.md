@@ -3,26 +3,26 @@ layout: home
 
 hero:
   name: Affordant
-  text: Affordance-first hypermedia client
-  tagline: Stop re-implementing your authorization in the frontend. Let the actions the server offers drive your UI.
+  text: Affordance-first hypermedia, both sides of the wire
+  tagline: Stop re-implementing your authorization in the frontend. The server declares the actions it offers; your UI renders off them.
   actions:
     - theme: brand
       text: Get started
       link: /guide/getting-started
     - theme: alt
-      text: The wire contract
-      link: /guide/wire-contract
+      text: The packages
+      link: /guide/packages
     - theme: alt
       text: View on GitHub
       link: https://github.com/Leroy-Florian/Affordant
 
 features:
-  - title: Zero dependencies
-    details: A handful of plain functions over plain data. Runs anywhere fetch exists — browsers, Node ≥ 18, Deno, Bun, edge workers.
   - title: Authorization, expressed once
-    details: The presence of a link encodes permission. The frontend renders off can(), it never re-derives your auth rules.
-  - title: Framework-agnostic
-    details: No hooks, no stores, no adapter. The same plain functions work in React, Vue, Svelte, or vanilla TypeScript.
+    details: The presence of a link encodes permission. The server decides per response; the frontend renders off can() and never re-derives your auth rules.
+  - title: One contract, both sides
+    details: The server's build() produces exactly what the client's can() consumes. A shared types package keeps producer and consumer from ever drifting.
+  - title: Zero-dependency cores, optional declinations
+    details: The client and server cores are plain functions over plain data. React hooks and an Effect invoker are opt-in packages — the cores never depend on them.
 ---
 
 ## The idea in thirty seconds
@@ -41,3 +41,21 @@ if (can(order, 'cancel')) {                        // 1. What is the server offe
 ```
 
 If the backend stops offering an action — not authorized, wrong state, feature off — the button disappears. No frontend deploy.
+
+## The other side of the wire
+
+The server declares those same affordances once, gating each on authoritative state. When `when` is false, the rel is never emitted — so `can()` returns false on the client.
+
+```ts
+import { resource } from '@affordant/server'
+
+resource(order)
+  .self(route('orders.show', order.id))
+  .action('cancel', route('orders.cancel', order.id), {
+    method: 'POST',
+    when: caller.id === order.ownerId && order.status !== 'shipped',
+  })
+  .build()
+```
+
+One contract, never two implementations to keep in sync. See [the packages](/guide/packages) for the whole family.

@@ -42,10 +42,36 @@ if (can(order, 'cancel')) {
 {/if}
 ```
 
-## Why no adapter?
+## You never *need* an adapter
 
-`can` and `actionFor` are pure, synchronous, null-safe reads over the resource you already hold. There is nothing to wire into a component lifecycle — you call them inline wherever you render. `follow` is a single `fetch` call returning a `Response`, so it composes with whatever data layer you already use (TanStack Query, SWR, a plain `await`, a Svelte store…).
+`can` and `actionFor` are pure, synchronous, null-safe reads over the resource you already hold. There is nothing to wire into a component lifecycle — you call them inline wherever you render. `follow` is a single `fetch` call returning a `Response`, so it composes with whatever data layer you already use (TanStack Query, SWR, a plain `await`, a Svelte store…). The vanilla examples above are a complete, supported way to use Affordant in any framework.
 
-## Today, the core is all you need
+## React, with hooks (optional)
 
-Affordant ships **only the framework-agnostic core** right now. There are no React/Vue/Svelte packages to install, and none are required — the examples above are the whole story. Optional *declinations* (for example a set of React hooks, or an [Effect](https://effect.website)-flavoured invoker) may ship later as separate packages, but they are not published yet, and the core will never depend on them.
+If you want ergonomics in React, [`@affordant/react`](/reference/react) wraps the same calls as hooks. It is opt-in; `affordant` never depends on it.
+
+```sh
+npm install @affordant/react
+```
+
+```tsx
+import { useAffordance, useFollow } from '@affordant/react'
+
+function CancelButton({ order }) {
+  const cancel = useAffordance(order, 'cancel') // { can, action } — pure gating
+  const { run, running } = useFollow()          // the Promise invoker, with state
+
+  if (!cancel.can) return null
+  return (
+    <button disabled={running} onClick={() => run(cancel.action!, { token })}>
+      Cancel order
+    </button>
+  )
+}
+```
+
+Prefer Effect? The `@affordant/react/effect` subpath runs the [Effect invoker](/reference/effect) through an [`effect-react-bridge`](/reference/effect-react-bridge) runtime — same hooks, typed errors, interruptible. See [Invokers: Promise & Effect](/guide/invokers).
+
+## Vue / Svelte
+
+No adapter packages exist for Vue or Svelte yet — and you don't need them. The vanilla snippets above are the whole story. If hooks-style ergonomics are wanted there too, they'd ship as their own opt-in packages, never as a dependency of the core.

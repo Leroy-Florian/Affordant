@@ -1,0 +1,30 @@
+{
+  "name": "@affordant/contract",
+  "version": "0.1.0",
+  "description": "The Affordant wire contract: shared TypeScript types for the _self / _actions hypermedia envelope. Zero runtime, zero dependencies.",
+  "license": "MIT",
+  "author": "Florian Leroy",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Leroy-Florian/Affordant.git",
+    "directory": "packages/contract"
+  },
+  "homepage": "https://leroy-florian.github.io/Affordant/",
+  "bugs": "https://github.com/Leroy-Florian/Affordant/issues",
+  "keywords": ["hateoas", "hypermedia", "affordance", "types", "contract"],
+  "type": "module",
+  "sideEffects": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json"
+  }
+}

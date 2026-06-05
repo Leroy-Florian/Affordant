@@ -1,4 +1,4 @@
-import type { HateoasAction } from './types.js'
+import type { HateoasAction } from '@affordant/contract'
 
 /**
  * A bearer token: a plain string, or a lazy getter invoked at request time
