@@ -101,6 +101,16 @@ npm test           # runs every package's tests
 npm run typecheck  # type-checks every package
 ```
 
+## Releasing
+
+Publishing to npm is automated with [Changesets](https://github.com/changesets/changesets) on push to `main` (see [`.github/workflows/release.yml`](.github/workflows/release.yml)):
+
+1. In your PR, run `npm run changeset`, pick the affected packages and a bump level, and commit the generated `.changeset/*.md`.
+2. Merging to `main` opens a **Version Packages** PR that bumps versions and writes changelogs, propagating bumps across internal dependencies.
+3. Merging that PR builds every package and runs `changeset publish` — releasing the new versions to npm in dependency order, with provenance.
+
+The first run on `main` with no pending changesets publishes the current `0.1.0` of every public package. Requires an `NPM_TOKEN` repository secret and ownership of the `@affordant` npm scope.
+
 ## Roadmap
 
 Each side grows by **declinations**, every one its own package so the cores stay dependency-free:

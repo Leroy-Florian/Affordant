@@ -23,6 +23,7 @@
     }
   },
   "files": ["dist"],
+  "publishConfig": { "access": "public" },
   "dependencies": {
     "@affordant/contract": "^0.1.0"
   },

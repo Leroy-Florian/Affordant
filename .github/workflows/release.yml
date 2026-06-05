@@ -1,0 +1,42 @@
+name: Release
+
+# Publishes the packages to npm via Changesets. On every push to main:
+#  - if there are pending changesets, it opens/updates a "Version Packages" PR;
+#  - otherwise it builds every package and runs `changeset publish`.
+# The first push with NPM_TOKEN set and no pending changesets publishes 0.1.0.
+on:
+  push:
+    branches: [main]
+
+# One release run at a time.
+concurrency: ${{ github.workflow }}
+
+permissions:
+  contents: write # create the Version Packages PR and tags
+  pull-requests: write # open/update the Version Packages PR
+  id-token: write # npm provenance via OIDC
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create Release PR or publish to npm
+        uses: changesets/action@v1
+        with:
+          version: npm run changeset:version
+          publish: npm run release
+          commit: 'chore: version packages'
+          title: 'chore: version packages'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true

@@ -25,11 +25,15 @@
     "build": "npm run build -w @affordant/contract && npm run build -w affordant && npm run build -w effect-react-bridge && npm run build -w @affordant/effect && npm run build -w @affordant/react && npm run build -w @affordant/server && npm run build -w @affordant/express",
     "typecheck": "npm run build && npm run typecheck --workspaces --if-present",
     "test": "vitest run",
+    "changeset": "changeset",
+    "changeset:version": "changeset version && npm install --package-lock-only",
+    "release": "npm run build && changeset publish",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.0",
     "@testing-library/react": "^16.1.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

@@ -27,6 +27,7 @@
     }
   },
   "files": ["dist"],
+  "publishConfig": { "access": "public" },
   "dependencies": {
     "affordant": "^0.1.0",
     "@affordant/contract": "^0.1.0"
@@ -34,8 +35,8 @@
   "peerDependencies": {
     "react": ">=18",
     "effect": "^3.21.0",
-    "effect-react-bridge": "^0.1.0",
-    "@affordant/effect": "^0.1.0"
+    "effect-react-bridge": ">=0.1.0",
+    "@affordant/effect": ">=0.1.0"
   },
   "peerDependenciesMeta": {
     "effect": { "optional": true },
