@@ -58,8 +58,9 @@ button.action:hover { background: var(--accent-press); }
 button.action:disabled { opacity: 0.5; cursor: default; }
 
 .panes { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.6rem; }
+.pane { min-width: 0; }
 .pane h3 { margin: 0 0 0.5rem; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
-pre { background: var(--code-bg); color: var(--code-fg); padding: 1rem; border-radius: 11px; overflow: auto; font-size: 12px; line-height: 1.55; margin: 0; font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; }
+pre { background: var(--code-bg); color: var(--code-fg); padding: 1rem; border-radius: 11px; overflow: auto; font-size: 12px; line-height: 1.55; margin: 0; font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
 
 .nav { margin-top: 2rem; display: flex; gap: 1.25rem; }
 a { color: var(--accent); text-decoration: none; }
