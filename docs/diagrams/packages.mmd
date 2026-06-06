@@ -1,0 +1,14 @@
+flowchart LR
+  contract["@affordant/contract<br/>(shared wire types)"]
+  server["@affordant/server"]
+  envelope["_self / _actions"]
+  client["affordant<br/>(can / actionFor / follow)"]
+  express["@affordant/express"]
+  react["@affordant/react (hooks)"]
+
+  contract -.-> server
+  contract -.-> client
+  server -- builds --> envelope
+  envelope -- reads --> client
+  server --- express
+  client --- react

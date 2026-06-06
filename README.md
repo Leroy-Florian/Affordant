@@ -1,5 +1,7 @@
 # Affordant
 
+**English** · [Français](README.fr.md)
+
 **Affordance-first hypermedia (HATEOAS), both sides of the wire.** Stop re-implementing your authorization rules in the frontend — let the actions the server offers drive your UI, and let the server declare those actions once.
 
 The server enriches each response with `_self` and `_actions`; the **presence of a rel encodes permission**. The client renders a button off the *presence* of the link — it never re-derives "can this user do X?".
@@ -86,23 +88,6 @@ npm run smoke      # verify the published npm artifacts (see smoke/)
 ```
 
 The [`demo/`](demo) package proves the contract across **two backends** (Express and pure-Node) × **two fronts** (vanilla JS and React): the E2E matrix and the Playwright specs assert it over real HTTP and a real browser. [`smoke/`](smoke) does the same against the **published** packages, not the workspace sources. CI runs build + typecheck + tests on every PR ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)); the browser E2E runs in [`e2e.yml`](.github/workflows/e2e.yml).
-
-## Releasing
-
-Publishing to npm is automated with [Changesets](https://github.com/changesets/changesets) on push to `main` (see [`.github/workflows/release.yml`](.github/workflows/release.yml)):
-
-1. In your PR, run `npm run changeset`, pick the affected packages and a bump level, and commit the generated `.changeset/*.md`.
-2. Merging to `main` opens a **Version Packages** PR that bumps versions and writes changelogs, propagating bumps across internal dependencies.
-3. Merging that PR builds every package and runs `changeset publish` — releasing the new versions to npm in dependency order, with provenance.
-
-The first run on `main` with no pending changesets publishes the current `0.1.0` of every public package. Requires an `NPM_TOKEN` repository secret and ownership of the `@affordant` npm scope.
-
-## Roadmap
-
-Each side grows by **declinations**, every one its own package so the cores stay dependency-free:
-
-- client: Vue composables, Svelte stores, …
-- server: more framework adapters (Fastify, Nest, Hono, …).
 
 ## License
 
