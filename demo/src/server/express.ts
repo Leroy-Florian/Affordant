@@ -1,6 +1,6 @@
 import { createServer } from 'node:http'
 import express, { type Request, type Response } from 'express'
-import { resource } from '@affordant/server'
+import { policy, resource } from '@affordant/server'
 import { sendResource, urlFor } from '@affordant/express'
 
 export type OrderStatus = 'pending' | 'cancelled' | 'shipped'
@@ -17,15 +17,29 @@ function callerId(req: Request): string | null {
   return header.slice('Bearer '.length) || null
 }
 
+/** Context every `cancel` decision is made against. */
+interface CancelCtx {
+  me: string | null
+  order: Order
+}
+
+/**
+ * The rule for cancelling an order, declared ONCE. The serializer uses it to
+ * gate the affordance; the handler uses it to enforce execution. Forging the
+ * request (recreating the button, calling the endpoint from the console) still
+ * hits this exact rule server-side, so it is rejected just the same.
+ */
+const cancelPolicy = policy<CancelCtx>('cancel', [
+  { ok: (c) => c.me === c.order.ownerId, status: 403, error: 'forbidden' },
+  { ok: (c) => c.order.status === 'pending', status: 409, error: 'not cancellable' },
+])
+
 function serializeOrder(req: Request, order: Order) {
-  const me = callerId(req)
+  const ctx: CancelCtx = { me: callerId(req), order }
   return resource(order)
     .self(urlFor(req, `/orders/${order.id}`))
     .action('track', urlFor(req, `/orders/${order.id}/tracking`))
-    .action('cancel', urlFor(req, `/orders/${order.id}/cancel`), {
-      method: 'POST',
-      when: me === order.ownerId && order.status === 'pending',
-    })
+    .offer(cancelPolicy, urlFor(req, `/orders/${order.id}/cancel`), ctx, { method: 'POST' })
 }
 
 /** The Express backend — uses `@affordant/server` + `@affordant/express`. */
@@ -86,12 +100,10 @@ export function createApp() {
       res.status(404).json({ error: 'not found' })
       return
     }
-    if (callerId(req) !== order.ownerId) {
-      res.status(403).json({ error: 'forbidden' })
-      return
-    }
-    if (order.status !== 'pending') {
-      res.status(409).json({ error: 'not cancellable' })
+    // Same policy, same context as the affordance — the single source of truth.
+    const denied = cancelPolicy.check({ me: callerId(req), order })
+    if (denied) {
+      res.status(denied.status).json({ error: denied.error })
       return
     }
     order.status = 'cancelled'

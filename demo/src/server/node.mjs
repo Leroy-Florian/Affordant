@@ -2,7 +2,7 @@
 // Affordant envelope with `@affordant/server`. Proves the server builder is
 // framework-agnostic and works from plain JS, with no `@affordant/express`.
 import { createServer } from 'node:http'
-import { resource } from '@affordant/server'
+import { policy, resource } from '@affordant/server'
 
 const CORS = {
   'access-control-allow-origin': '*',
@@ -21,15 +21,18 @@ function urlFor(req, path) {
   return `http://${req.headers.host ?? 'localhost'}${path}`
 }
 
+// The cancel rule, declared once: gates the affordance AND guards the handler.
+const cancelPolicy = policy('cancel', [
+  { ok: (c) => c.me === c.order.ownerId, status: 403, error: 'forbidden' },
+  { ok: (c) => c.order.status === 'pending', status: 409, error: 'not cancellable' },
+])
+
 function serialize(req, order) {
-  const me = callerId(req)
+  const ctx = { me: callerId(req), order }
   return resource(order)
     .self(urlFor(req, `/orders/${order.id}`))
     .action('track', urlFor(req, `/orders/${order.id}/tracking`))
-    .action('cancel', urlFor(req, `/orders/${order.id}/cancel`), {
-      method: 'POST',
-      when: me === order.ownerId && order.status === 'pending',
-    })
+    .offer(cancelPolicy, urlFor(req, `/orders/${order.id}/cancel`), ctx, { method: 'POST' })
     .build()
 }
 
@@ -82,8 +85,9 @@ export function createApp() {
     if (req.method === 'POST' && cancel) {
       const order = orders.get(cancel[1])
       if (!order) return send(res, 404, { error: 'not found' })
-      if (callerId(req) !== order.ownerId) return send(res, 403, { error: 'forbidden' })
-      if (order.status !== 'pending') return send(res, 409, { error: 'not cancellable' })
+      // Same policy, same context as the affordance — the single source of truth.
+      const denied = cancelPolicy.check({ me: callerId(req), order })
+      if (denied) return send(res, denied.status, { error: denied.error })
       order.status = 'cancelled'
       return send(res, 200, serialize(req, order))
     }

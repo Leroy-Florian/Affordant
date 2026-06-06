@@ -1,4 +1,5 @@
 import type { HateoasAction, HateoasMethod, HateoasResource } from '@affordant/contract'
+import type { Policy } from './policy.js'
 
 /** Options for a single affordance offered on a resource. */
 export interface ActionOptions {
@@ -35,6 +36,18 @@ export interface ResourceBuilder<T> {
    * emitted, so the client never sees it.
    */
   action(rel: string, href: string, opts?: ActionOptions): ResourceBuilder<T>
+  /**
+   * Offer a {@link Policy}'s action: gates visibility with `policy.granted(ctx)`
+   * and uses `policy.rel` as the relation. The handler enforces the *same*
+   * policy on the same `ctx`, so the affordance and the guard cannot drift.
+   * `opts` is the usual {@link ActionOptions} minus `when` (the policy owns it).
+   */
+  offer<Ctx>(
+    policy: Policy<Ctx>,
+    href: string,
+    ctx: Ctx,
+    opts?: Omit<ActionOptions, 'when'>,
+  ): ResourceBuilder<T>
   /** Produce the enriched wire resource. `_actions` is always present (possibly empty). */
   build(): HateoasResource<T>
 }
@@ -68,6 +81,9 @@ export function resource<T extends object>(data: T): ResourceBuilder<T> {
       if (opts?.accepts !== undefined) action.accepts = opts.accepts
       actions[rel] = action
       return builder
+    },
+    offer(policy, href, ctx, opts) {
+      return builder.action(policy.rel, href, { ...opts, when: policy.granted(ctx) })
     },
     build() {
       return {
