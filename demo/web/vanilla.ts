@@ -1,6 +1,11 @@
 import './styles.css'
+import 'highlight.js/styles/github-dark.css'
+import hljs from 'highlight.js/lib/core'
+import javascript from 'highlight.js/lib/languages/javascript'
 import { actionFor, can, follow, type HateoasResource } from 'affordant'
 import { backends } from './backends.js'
+
+hljs.registerLanguage('javascript', javascript)
 
 type Order = { id: string; status: string }
 
@@ -26,7 +31,9 @@ async function render() {
   const backend = current()
   logo.src = backend.logo
   controllerTitle.textContent = `Controller (${backend.label})`
-  controller.textContent = backend.controller
+  controller.innerHTML = `<code class="hljs language-javascript">${
+    hljs.highlight(backend.controller, { language: 'javascript' }).value
+  }</code>`
 
   const token = ownerBox.checked ? 'u1' : undefined
   const order: HateoasResource<Order> = await fetch(

@@ -1,9 +1,15 @@
 import './styles.css'
+import 'highlight.js/styles/github-dark.css'
 import { StrictMode, useState } from 'react'
 import { createRoot } from 'react-dom/client'
+import hljs from 'highlight.js/lib/core'
+import javascript from 'highlight.js/lib/languages/javascript'
 import type { HateoasResource } from '@affordant/react'
 import { OrderCard } from '../src/front/OrderCard.js'
 import { backends } from './backends.js'
+
+hljs.registerLanguage('javascript', javascript)
+const highlight = (code: string) => hljs.highlight(code, { language: 'javascript' }).value
 
 function App() {
   const [backendId, setBackendId] = useState(backends[0]!.id)
@@ -50,11 +56,18 @@ function App() {
         <div className="panes">
           <div className="pane">
             <h3>Controller · {backend.label}</h3>
-            <pre>{backend.controller}</pre>
+            <pre className="code">
+              <code
+                className="hljs language-javascript"
+                dangerouslySetInnerHTML={{ __html: highlight(backend.controller) }}
+              />
+            </pre>
           </div>
           <div className="pane">
             <h3>Response</h3>
-            <pre data-testid="response">{response ? JSON.stringify(response, null, 2) : '…'}</pre>
+            <pre className="json" data-testid="response">
+              {response ? JSON.stringify(response, null, 2) : '…'}
+            </pre>
           </div>
         </div>
       </div>
