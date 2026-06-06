@@ -1,7 +1,7 @@
 {
   "name": "@affordant/react",
   "version": "0.2.0",
-  "description": "React adapter for Affordant: gate UI on the server's affordances and invoke them with either invoker — the vanilla Promise one or the Effect one.",
+  "description": "React adapter for Affordant: gate UI on the server's affordances and follow them with hooks. Zero runtime dependencies beyond React.",
   "license": "MIT",
   "author": "Florian Leroy",
   "repository": {
@@ -26,10 +26,6 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    },
-    "./effect": {
-      "types": "./dist/effect.d.ts",
-      "import": "./dist/effect.js"
     }
   },
   "files": [
@@ -43,25 +39,7 @@
     "@affordant/contract": "^0.2.0"
   },
   "peerDependencies": {
-    "react": ">=18",
-    "effect": "^3.21.0",
-    "effect-react-bridge": ">=0.1.0",
-    "@affordant/effect": ">=0.1.0"
-  },
-  "peerDependenciesMeta": {
-    "effect": {
-      "optional": true
-    },
-    "effect-react-bridge": {
-      "optional": true
-    },
-    "@affordant/effect": {
-      "optional": true
-    }
-  },
-  "devDependencies": {
-    "@affordant/effect": "*",
-    "effect-react-bridge": "*"
+    "react": ">=18"
   },
   "scripts": {
     "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json",

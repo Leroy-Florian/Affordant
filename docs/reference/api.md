@@ -1,6 +1,6 @@
 # `affordant`
 
-The vanilla client and the **Promise** [invoker](/guide/invokers). Zero runtime dependencies. For the other packages, see [`@affordant/effect`](/reference/effect), [`@affordant/react`](/reference/react), [`@affordant/server`](/reference/server), and the shared [`@affordant/contract`](/reference/contract).
+The client: read the actions the server offers, gate your UI on them, follow them. Zero runtime dependencies. For the other packages, see [`@affordant/react`](/reference/react), [`@affordant/server`](/reference/server), and the shared [`@affordant/contract`](/reference/contract).
 
 Everything is exported from the package root:
 
@@ -90,6 +90,8 @@ function follow(action: HateoasAction, init?: FollowInit): Promise<Response>
 ```
 
 Invokes a hypermedia action with vanilla `fetch`. It builds the request from the action descriptor (`method` + `href` + `accepts`), injects the bearer token if provided, and JSON-encodes the body when the action accepts JSON. Returns the raw `Response` — you decide how to read it.
+
+Because it is a plain `Promise`-returning function, it is **Effect-compatible** out of the box: wrap it with `Effect.tryPromise(() => follow(action, init))` if you work with [Effect](https://effect.website). Affordant carries no Effect dependency — the interop is yours to add when you want it.
 
 ```ts
 const res = await follow(actionFor(order, 'cancel')!, {

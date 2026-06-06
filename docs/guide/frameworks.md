@@ -70,7 +70,9 @@ function CancelButton({ order }) {
 }
 ```
 
-Prefer Effect? The `@affordant/react/effect` subpath runs the [Effect invoker](/reference/effect) through an [`effect-react-bridge`](/reference/effect-react-bridge) runtime — same hooks, typed errors, interruptible. See [Invokers: Promise & Effect](/guide/invokers).
+## Using Effect
+
+`follow` is a plain promise-returning function, so it drops into Effect (or any effect system) with a one-line wrap — `Effect.tryPromise(() => follow(action, init))`. That interop is yours to add if you want it; Affordant never ships an Effect dependency.
 
 ## Vue / Svelte
 

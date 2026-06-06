@@ -26,17 +26,10 @@ This repo is an npm-workspaces monorepo. One shared contract, symmetric on each 
 | Package | Side | What it does |
 |---|---|---|
 | [`@affordant/contract`](packages/contract) | shared | The wire-contract types. Zero runtime, zero deps. Everything else depends on it. |
-| [`affordant`](packages/client) | client | `can` / `actionFor` / `follow` — gate UI on what the server offers. Zero deps. The vanilla (Promise) invoker. |
-| [`@affordant/effect`](packages/effect) | client | The [Effect](https://effect.website)-flavoured invoker: `follow` as an `Effect` with a typed error channel. |
-| [`@affordant/react`](packages/react) | client | React adapter: gate UI on affordances and invoke them with **either** invoker (Promise or Effect). |
+| [`affordant`](packages/client) | client | `can` / `actionFor` / `follow` — gate UI on what the server offers. Zero runtime deps. |
+| [`@affordant/react`](packages/react) | client | React adapter: gate UI on affordances and follow them with hooks. |
 | [`@affordant/server`](packages/server) | server | A builder that emits the `_self` / `_actions` envelope. Framework-agnostic. |
 | [`@affordant/express`](packages/express) | server | Express adapter: send the envelope and build URLs from the request. |
-
-Plus one **domain-agnostic** package that lives here for convenience but is coupled to React + Effect, not to the wire contract:
-
-| Package | Side | What it does |
-|---|---|---|
-| [`effect-react-bridge`](packages/effect-react-bridge) | client | Run Effect programs inside React (query / imperative hooks + `RemoteData`). No hypermedia, no Affordant coupling. |
 
 ```
                  ┌─ @affordant/contract (shared wire types) ─┐
@@ -75,31 +68,22 @@ resource(order)
 
 The `when` predicate *is* the authorization: when it's false, the rel is never emitted, so `can(order, 'cancel')` returns false on the client.
 
-## Two orthogonal axes on the client
+## Using Effect
 
-Consuming an affordance has two independent choices: the **UI framework** (React, …) and the **effect system** (vanilla `Promise` or `Effect`). They compose instead of multiplying — everything pure (`can`, `actionFor`, the server builder) is effect-agnostic by construction, so the only seam is the invoker:
-
-```ts
-// the invoker is the single point of variation
-type Invoker<F> = (action: HateoasAction, init?: FollowInit) => F
-// affordant       → Invoker<Promise<Response>>
-// @affordant/effect → Invoker<Effect<Response, FollowError>>
-```
-
-`@affordant/react` is built against that seam: `useFollow` from `@affordant/react` uses the Promise invoker; `makeAffordanceHooks` from `@affordant/react/effect` runs the Effect invoker through the [`effect-react-bridge`](packages/effect-react-bridge) runtime. The bridge stays generic — it knows nothing about hypermedia.
-
-## A package belongs here iff it is coupled to the wire contract
-
-That single rule decides membership. `@affordant/effect` and `@affordant/react` depend on the contract → they live in the family. `effect-react-bridge` depends on React + Effect but **not** the contract → it is an independent publication that merely shares this workspace.
+`follow` is a plain promise-returning function, so it drops into [Effect](https://effect.website) — or any effect system — with a one-line wrap: `Effect.tryPromise(() => follow(action, init))`. Affordant stays **Effect-compatible without shipping an Effect dependency**; the interop is yours to add when you want it.
 
 ## Develop
 
 ```sh
 npm install        # installs all workspaces
 npm run build      # builds every package (contract first)
-npm test           # runs every package's tests
 npm run typecheck  # type-checks every package
+npm test           # unit tests + end-to-end demo suites
+npm run demo       # boot the live demo server (see demo/)
+npm run smoke      # verify the published npm artifacts (see smoke/)
 ```
+
+The [`demo/`](demo) package is a real Express server consumed over HTTP by the vanilla client and the React adapter — the E2E suites assert the whole contract across the packages. [`smoke/`](smoke) does the same against the **published** packages, not the workspace sources. CI runs build + typecheck + tests on every PR ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 
 ## Releasing
 
@@ -115,7 +99,7 @@ The first run on `main` with no pending changesets publishes the current `0.1.0`
 
 Each side grows by **declinations**, every one its own package so the cores stay dependency-free:
 
-- client: Vue composables, Svelte stores, more invokers, …
+- client: Vue composables, Svelte stores, …
 - server: more framework adapters (Fastify, Nest, Hono, …).
 
 ## License

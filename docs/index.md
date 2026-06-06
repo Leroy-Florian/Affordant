@@ -21,8 +21,8 @@ features:
     details: The presence of a link encodes permission. The server decides per response; the frontend renders off can() and never re-derives your auth rules.
   - title: One contract, both sides
     details: The server's build() produces exactly what the client's can() consumes. A shared types package keeps producer and consumer from ever drifting.
-  - title: Zero-dependency cores, optional declinations
-    details: The client and server cores are plain functions over plain data. React hooks and an Effect invoker are opt-in packages — the cores never depend on them.
+  - title: Zero-dependency cores
+    details: The client and server are plain functions over plain data, no runtime dependencies. An optional React adapter adds hooks when you want them.
 ---
 
 ## The idea in thirty seconds

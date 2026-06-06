@@ -4,7 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'Affordant',
   description:
-    'Affordance-first hypermedia (HATEOAS), both sides of the wire. A shared contract, a zero-dependency client, a server-side envelope builder, and React / Effect declinations.',
+    'Affordance-first hypermedia (HATEOAS), both sides of the wire. A zero-dependency client, a server-side envelope builder, and a React adapter — all over one shared contract.',
   // Deployed to https://<user>.github.io/Affordant/ — change to '/' for a custom domain.
   base: '/Affordant/',
   cleanUrls: true,
@@ -23,7 +23,6 @@ export default defineConfig({
             { text: 'Getting started', link: '/guide/getting-started' },
             { text: 'The packages', link: '/guide/packages' },
             { text: 'The wire contract', link: '/guide/wire-contract' },
-            { text: 'Invokers: Promise & Effect', link: '/guide/invokers' },
             { text: 'Framework usage', link: '/guide/frameworks' },
             { text: 'Server side', link: '/guide/server-side' },
           ],
@@ -34,7 +33,6 @@ export default defineConfig({
           text: 'Client',
           items: [
             { text: 'affordant', link: '/reference/api' },
-            { text: '@affordant/effect', link: '/reference/effect' },
             { text: '@affordant/react', link: '/reference/react' },
           ],
         },
@@ -44,10 +42,7 @@ export default defineConfig({
         },
         {
           text: 'Shared',
-          items: [
-            { text: '@affordant/contract', link: '/reference/contract' },
-            { text: 'effect-react-bridge', link: '/reference/effect-react-bridge' },
-          ],
+          items: [{ text: '@affordant/contract', link: '/reference/contract' }],
         },
       ],
     },

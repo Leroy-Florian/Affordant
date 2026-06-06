@@ -1,6 +1,6 @@
 # `@affordant/contract`
 
-The shared **wire-contract** types. Zero runtime, zero dependencies — it ships only `.d.ts`. Every other package depends on it, so the producer (`@affordant/server`) and the consumers (`affordant`, `@affordant/effect`, `@affordant/react`) can never drift apart.
+The shared **wire-contract** types. Zero runtime, zero dependencies — it ships only `.d.ts`. Every other package depends on it, so the producer (`@affordant/server`) and the consumers (`affordant`, `@affordant/react`) can never drift apart.
 
 ```sh
 npm install @affordant/contract

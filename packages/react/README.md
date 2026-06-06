@@ -1,8 +1,14 @@
 # @affordant/react
 
-React adapter for [Affordant](https://leroy-florian.github.io/Affordant/). Gate your UI on what the server offers, and invoke affordances with **either invoker** — the vanilla Promise one or the Effect one. The framework axis (React) and the effect-system axis (Promise / Effect) stay orthogonal and composable.
+React adapter for [Affordant](https://leroy-florian.github.io/Affordant/). Gate your UI on what the server offers, and follow affordances with hooks. No runtime dependency beyond React.
 
-## Gating (pure, invoker-agnostic)
+## Install
+
+```sh
+npm install @affordant/react react
+```
+
+## Gating
 
 ```tsx
 import { useAffordance } from '@affordant/react'
@@ -14,7 +20,7 @@ function CancelButton({ order }) {
 }
 ```
 
-## Vanilla (Promise) invoker
+## Following
 
 ```tsx
 import { useAffordance, useFollow } from '@affordant/react'
@@ -27,20 +33,20 @@ const { run, running } = useFollow()
 </button>
 ```
 
-## Effect invoker
+`run` resolves with the raw `Response` and re-throws on failure, with `error` set.
 
-The Effect path composes [`@affordant/effect`](https://www.npmjs.com/package/@affordant/effect) with the [`effect-react-bridge`](https://www.npmjs.com/package/effect-react-bridge) runtime — no Effect coupling leaks into the vanilla path.
+## Using Effect
 
-```ts
-import { makeEffectHooks } from 'effect-react-bridge'
-import { makeAffordanceHooks } from '@affordant/react/effect'
+There is no Effect entry point, and none is needed: `run` (and the underlying `follow`) return a `Promise<Response>`, which drops into Effect with a one-line wrap — `Effect.tryPromise(() => follow(action, init))`. Affordant stays Effect-compatible without shipping an Effect dependency.
 
-const bridge = makeEffectHooks({ runtime })
-const { useFollow } = makeAffordanceHooks(bridge)
-// useFollow().run(action, init) is now an interruptible Effect with a typed error
-```
+## API
 
-`react` is a peer dependency; `effect`, `effect-react-bridge` and `@affordant/effect` are optional peers, needed only for `@affordant/react/effect`.
+| Export | Description |
+|---|---|
+| `useAffordance(resource, rel)` | `{ can, action }` — memoised, null-safe gating over `can` / `actionFor`. |
+| `useFollow()` | `{ running, error, run }` — follow an action, tracking request state. |
+
+`react` is a peer dependency.
 
 ## License
 
