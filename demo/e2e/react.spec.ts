@@ -7,7 +7,7 @@ test.beforeEach(async ({ request }) => {
 })
 
 test('React front: Cancel is gated on the owner affordance', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/react.html')
   await expect(page.getByText(/Order 8f3a2c/)).toBeVisible()
 
   // anonymous → no cancel

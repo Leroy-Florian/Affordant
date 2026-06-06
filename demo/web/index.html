@@ -3,10 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Affordant — React front</title>
+    <title>Affordant — Dashboard</title>
+    <style>
+      body { font-family: system-ui; max-width: 680px; margin: 2rem auto; line-height: 1.5; }
+      table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+      td, th { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid #eee; }
+      .dot { display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 50%; background: #bbb; }
+      .up { background: #22c55e; }
+      .down { background: #ef4444; }
+      a { color: #2563eb; }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/main.tsx"></script>
+    <h1>Affordant — Dashboard</h1>
+    <p>All demo services, wired together. Backends show live status; fronts are pages served here. Click any to open it.</p>
+    <table>
+      <thead>
+        <tr><th>Status</th><th>Service</th><th>Kind</th><th>Open</th></tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <script type="module" src="/dashboard.ts"></script>
   </body>
 </html>

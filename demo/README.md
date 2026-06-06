@@ -25,13 +25,14 @@ npm run e2e       # browser E2E: drives both fronts in a real browser (Playwrigh
 
 `tests/{vanilla,react}.e2e.test.*` run each front against **both** backends. `e2e/*.spec.ts` open the actual browser pages and click through the contract. (Run `npm run e2e:install` once to fetch the browser.)
 
-## Run it by hand
+## Run it — one command
 
 ```sh
-npm run dev:express        # or: npm run dev:node — backend on http://localhost:8787
-npm run web                # Vite dev server with both browser fronts
+npm run demo        # from the repo root — starts both backends + the web, wired together
 ```
 
-Open the React front, tick *Authenticated as owner* and watch the **Cancel** button appear; click it and it vanishes once the order is cancelled. The vanilla page (`/vanilla.html`) does the same with no framework. Both talk to whichever backend is on `:8787`.
+Open the **dashboard** at <http://localhost:5173>: a small Aspire-like board listing every service — Express API (`:8787`), Node API (`:8788`), and the React & vanilla fronts — with **live up/down status** and one-click links.
+
+From there, open the React front, tick *Authenticated as owner*, and watch the **Cancel** button appear; click it and it vanishes once the order is cancelled. The vanilla front does the same with no framework. (Need just one piece? `npm run dev:express`, `npm run dev:node`, or `npm run web`.)
 
 For the **published** packages (not the workspace sources), see [`../smoke`](../smoke).

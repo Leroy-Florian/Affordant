@@ -29,7 +29,7 @@ function App() {
       </p>
       <OrderCard key={`${baseUrl}:${owner}`} baseUrl={baseUrl} token={owner ? 'u1' : undefined} />
       <p>
-        <a href="/vanilla.html">Vanilla JS front →</a>
+        <a href="/">← Dashboard</a> · <a href="/vanilla.html">Vanilla JS front →</a>
       </p>
     </main>
   )

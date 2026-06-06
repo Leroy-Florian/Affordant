@@ -52,6 +52,11 @@ export function createApp() {
 
     const path = (req.url ?? '').split('?')[0]
 
+    // Liveness for the dashboard.
+    if (req.method === 'GET' && path === '/health') {
+      return send(res, 200, { ok: true, backend: 'node' })
+    }
+
     // Test-only: re-seed the store so each browser E2E starts from a clean state.
     if (req.method === 'POST' && path === '/reset') {
       orders.set('8f3a2c', { id: '8f3a2c', ownerId: 'u1', total: 4200, status: 'pending' })

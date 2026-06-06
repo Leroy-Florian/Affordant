@@ -79,8 +79,7 @@ npm install        # installs all workspaces
 npm run build      # builds every package (contract first)
 npm run typecheck  # type-checks every package
 npm test           # unit tests + the demo E2E matrix
-npm run demo       # boot a live backend (see demo/)
-npm run demo:web   # serve the browser fronts (Vite)
+npm run demo       # one command: both backends + the web fronts + a status dashboard
 npm run e2e        # browser E2E (Playwright)
 npm run smoke      # verify the published npm artifacts (see smoke/)
 ```

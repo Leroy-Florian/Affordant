@@ -49,6 +49,11 @@ export function createApp() {
     next()
   })
 
+  // Liveness for the dashboard.
+  app.get('/health', (_req: Request, res: Response) => {
+    res.json({ ok: true, backend: 'express' })
+  })
+
   // Test-only: re-seed the store so each browser E2E starts from a clean state.
   app.post('/reset', (_req: Request, res: Response) => {
     orders.clear()
