@@ -1,3 +1,4 @@
+import { createServer } from 'node:http'
 import express, { type Request, type Response } from 'express'
 import { resource } from '@affordant/server'
 import { sendResource, urlFor } from '@affordant/express'
@@ -106,13 +107,16 @@ export interface RunningServer {
 }
 
 export function startServer(port = 0): Promise<RunningServer> {
-  const app = createApp()
-  return new Promise((resolve) => {
-    const server = app.listen(port, () => {
+  // Use node:http directly (like the Node backend) instead of app.listen — more
+  // predictable across platforms. Fall back to the requested port for the URL.
+  const server = createServer(createApp())
+  return new Promise((resolve, reject) => {
+    server.on('error', reject)
+    server.listen(port, () => {
       const address = server.address()
-      const p = typeof address === 'object' && address ? address.port : 0
+      const actual = typeof address === 'object' && address ? address.port : port
       resolve({
-        url: `http://127.0.0.1:${p}`,
+        url: `http://127.0.0.1:${actual}`,
         close: () => new Promise<void>((done) => server.close(() => done())),
       })
     })
