@@ -17,4 +17,8 @@ export default defineConfig({
       '@affordant/react': src('react'),
     },
   },
+  test: {
+    // Vitest runs the matrix suites under tests/; the Playwright specs live in e2e/.
+    include: ['tests/**/*.test.{ts,tsx}'],
+  },
 })

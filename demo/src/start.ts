@@ -1,20 +1,21 @@
-import { can, actionFor } from 'affordant'
-import { startServer } from './server.js'
+import { actionFor, can } from 'affordant'
+import { startServer as startExpress } from './server/express.js'
+import { startServer as startNode } from './server/node.mjs'
 
-/**
- * Launch the demo server and print a couple of curl commands that show the
- * affordance-first contract in action: the `cancel` link only appears for the
- * authenticated owner.
- */
-const { url } = await startServer()
+// `tsx src/start.ts [express|node]` (or BACKEND=node). PORT defaults to 8787
+// so the browser demos in web/ can point at a stable origin.
+const which = process.argv[2] ?? process.env.BACKEND ?? 'express'
+const port = Number(process.env.PORT ?? 8787)
+const start = which === 'node' ? startNode : startExpress
 
-// Show the difference between anonymous and owner views, server-side.
+const { url } = await start(port)
+
 const anon = await fetch(`${url}/orders/8f3a2c`).then((r) => r.json())
 const owner = await fetch(`${url}/orders/8f3a2c`, {
   headers: { authorization: 'Bearer u1' },
 }).then((r) => r.json())
 
-console.log(`Affordant demo server running at ${url}\n`)
+console.log(`Affordant demo — ${which} backend running at ${url}\n`)
 console.log(`anonymous → can(cancel) = ${can(anon, 'cancel')}`)
 console.log(`owner     → can(cancel) = ${can(owner, 'cancel')}  ${JSON.stringify(actionFor(owner, 'cancel'))}\n`)
 console.log('Try it:')

@@ -5,7 +5,9 @@
   "description": "End-to-end demo: a real Express server emitting the Affordant envelope, consumed over HTTP by the vanilla client and the React adapter.",
   "type": "module",
   "scripts": {
-    "start": "tsx src/start.ts",
+    "start": "tsx src/start.ts express",
+    "dev:express": "tsx src/start.ts express",
+    "dev:node": "tsx src/start.ts node",
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run"
   },
