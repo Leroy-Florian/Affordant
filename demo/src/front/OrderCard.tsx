@@ -4,36 +4,57 @@ import { useAffordance, useFollow, type HateoasResource } from '@affordant/react
 
 type Order = { id: string; total: number; status: string }
 
-export function OrderCard({ baseUrl, token }: { baseUrl: string; token?: string }) {
+export function OrderCard({
+  baseUrl,
+  token,
+  onLoaded,
+  orderLabel = 'Order',
+  cancelLabel = 'Cancel',
+}: {
+  baseUrl: string
+  token?: string
+  /** Called with each freshly loaded resource — lets a parent show the raw response. */
+  onLoaded?: (order: HateoasResource<Order>) => void
+  /** UI labels (defaults keep tests language-agnostic). */
+  orderLabel?: string
+  cancelLabel?: string
+}) {
   const [order, setOrder] = useState<HateoasResource<Order> | null>(null)
 
   const load = useCallback(() => {
     fetch(`${baseUrl}/orders/8f3a2c`, token ? { headers: { authorization: `Bearer ${token}` } } : undefined)
       .then((r) => r.json())
-      .then(setOrder)
-  }, [baseUrl, token])
+      .then((o: HateoasResource<Order>) => {
+        setOrder(o)
+        onLoaded?.(o)
+      })
+  }, [baseUrl, token, onLoaded])
 
   useEffect(load, [load])
 
   const cancel = useAffordance(order, 'cancel')
   const { run, running } = useFollow()
 
-  if (!order) return <p>Loading…</p>
+  if (!order) return null
 
   return (
-    <div>
-      <p>
-        Order {order.id} — <strong>{order.status}</strong>
-      </p>
+    <div className="order">
+      <span>
+        {orderLabel} {order.id}
+      </span>
+      <span className={`badge badge-${order.status}`} data-testid="status">
+        {order.status}
+      </span>
       {cancel.can && (
         <button
+          className="action"
           disabled={running}
           onClick={async () => {
             await run(cancel.action!, { token })
             load()
           }}
         >
-          Cancel
+          {cancelLabel}
         </button>
       )}
     </div>

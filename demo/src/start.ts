@@ -2,10 +2,9 @@ import { actionFor, can } from 'affordant'
 import { startServer as startExpress } from './server/express.js'
 import { startServer as startNode } from './server/node.mjs'
 
-// `tsx src/start.ts [express|node]` (or BACKEND=node). PORT defaults to 8787
-// so the browser demos in web/ can point at a stable origin.
+// `tsx src/start.ts [express|node] [port]` (or BACKEND / PORT env).
 const which = process.argv[2] ?? process.env.BACKEND ?? 'express'
-const port = Number(process.env.PORT ?? 8787)
+const port = Number(process.argv[3] ?? process.env.PORT ?? 8787)
 const start = which === 'node' ? startNode : startExpress
 
 const { url } = await start(port)

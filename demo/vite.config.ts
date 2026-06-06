@@ -9,6 +9,7 @@ const src = (p: string) => fileURLToPath(new URL(`../packages/${p}/src/index.ts`
 export default defineConfig({
   root: 'web',
   plugins: [react()],
+  server: { port: 5173, strictPort: true },
   resolve: {
     alias: {
       affordant: src('client'),
@@ -21,7 +22,8 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        main: fileURLToPath(new URL('./web/index.html', import.meta.url)),
+        dashboard: fileURLToPath(new URL('./web/index.html', import.meta.url)),
+        react: fileURLToPath(new URL('./web/react.html', import.meta.url)),
         vanilla: fileURLToPath(new URL('./web/vanilla.html', import.meta.url)),
       },
     },

@@ -4,22 +4,45 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Affordant — Vanilla JS front</title>
-    <style>
-      body { font-family: system-ui; max-width: 640px; margin: 2rem auto; line-height: 1.5; }
-    </style>
   </head>
   <body>
-    <h1>Affordant — Vanilla JS front</h1>
-    <p>Same contract, no framework: plain <code>affordant</code> calls drive the UI.</p>
-    <p>
-      <label>Backend <input id="base" value="http://localhost:8787" size="30" /></label>
-    </p>
-    <p>
-      <label><input type="checkbox" id="owner" /> Authenticated as owner (u1)</label>
-    </p>
-    <p><button id="load">Load order</button></p>
-    <div id="out"></div>
-    <p><a href="/">← React front</a></p>
+    <div class="container">
+      <div class="header">
+        <h1 id="title"></h1>
+        <div class="lang" id="lang"></div>
+      </div>
+      <p class="lede" id="lede"></p>
+
+      <div class="card">
+        <div class="controls">
+          <label class="field">
+            <span id="api-label"></span> <img id="logo" class="logo" alt="" />
+            <select id="backend"></select>
+          </label>
+          <label class="switch">
+            <input type="checkbox" id="owner" /> <span id="owner-label"></span>
+          </label>
+        </div>
+
+        <div id="out"></div>
+
+        <div class="panes">
+          <div class="pane">
+            <h3 id="controller-title"></h3>
+            <pre id="controller" class="code"></pre>
+          </div>
+          <div class="pane">
+            <h3 id="response-title"></h3>
+            <pre id="response" class="json" data-testid="response"></pre>
+          </div>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a href="/" id="nav-dashboard"></a>
+        <a href="/react.html" id="nav-react"></a>
+      </nav>
+    </div>
     <script type="module" src="/vanilla.ts"></script>
   </body>
 </html>

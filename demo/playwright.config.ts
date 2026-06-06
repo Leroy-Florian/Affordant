@@ -7,11 +7,19 @@ const WEB = 'http://localhost:4173'
 // browser fronts. Run `npm run e2e:install` once to fetch the browser.
 export default defineConfig({
   testDir: 'e2e',
+  // Serial: the specs share one backend order, and each resets it in beforeEach.
+  workers: 1,
+  fullyParallel: false,
   use: { baseURL: WEB },
   webServer: [
     {
       command: 'npm run dev:express',
       url: `${BACKEND}/orders/8f3a2c`,
+      reuseExistingServer: !process.env.CI,
+    },
+    {
+      command: 'npm run dev:node',
+      url: 'http://localhost:8788/health',
       reuseExistingServer: !process.env.CI,
     },
     {

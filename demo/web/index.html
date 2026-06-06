@@ -3,10 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Affordant — React front</title>
+    <title>Affordant — Dashboard</title>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/main.tsx"></script>
+    <div class="container">
+      <div class="header">
+        <h1 id="title"></h1>
+        <div class="lang" id="lang"></div>
+      </div>
+      <p class="lede" id="lede"></p>
+      <div class="card">
+        <table>
+          <thead>
+            <tr><th id="th-status"></th><th id="th-service"></th><th id="th-kind"></th><th></th></tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+    <script type="module" src="/dashboard.ts"></script>
   </body>
 </html>
