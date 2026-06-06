@@ -5,6 +5,7 @@
   "description": "End-to-end demo: Express and pure-Node backends emitting the Affordant envelope, consumed over HTTP by a vanilla JS front and a React front.",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/free-ports.mjs",
     "dev": "concurrently -k -n express,node,web -c green,cyan,magenta \"npm:dev:express\" \"npm:dev:node\" \"npm:web\"",
     "start": "npm run dev",
     "dev:express": "tsx src/start.ts express 8787",
