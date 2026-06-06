@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Affordant — Vanilla JS front</title>
+    <style>
+      body { font-family: system-ui; max-width: 640px; margin: 2rem auto; line-height: 1.5; }
+    </style>
+  </head>
+  <body>
+    <h1>Affordant — Vanilla JS front</h1>
+    <p>Same contract, no framework: plain <code>affordant</code> calls drive the UI.</p>
+    <p>
+      <label>Backend <input id="base" value="http://localhost:8787" size="30" /></label>
+    </p>
+    <p>
+      <label><input type="checkbox" id="owner" /> Authenticated as owner (u1)</label>
+    </p>
+    <p><button id="load">Load order</button></p>
+    <div id="out"></div>
+    <p><a href="/">← React front</a></p>
+    <script type="module" src="/vanilla.ts"></script>
+  </body>
+</html>

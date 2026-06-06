@@ -78,12 +78,14 @@ The `when` predicate *is* the authorization: when it's false, the rel is never e
 npm install        # installs all workspaces
 npm run build      # builds every package (contract first)
 npm run typecheck  # type-checks every package
-npm test           # unit tests + end-to-end demo suites
-npm run demo       # boot the live demo server (see demo/)
+npm test           # unit tests + the demo E2E matrix
+npm run demo       # boot a live backend (see demo/)
+npm run demo:web   # serve the browser fronts (Vite)
+npm run e2e        # browser E2E (Playwright)
 npm run smoke      # verify the published npm artifacts (see smoke/)
 ```
 
-The [`demo/`](demo) package is a real Express server consumed over HTTP by the vanilla client and the React adapter — the E2E suites assert the whole contract across the packages. [`smoke/`](smoke) does the same against the **published** packages, not the workspace sources. CI runs build + typecheck + tests on every PR ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
+The [`demo/`](demo) package proves the contract across **two backends** (Express and pure-Node) × **two fronts** (vanilla JS and React): the E2E matrix and the Playwright specs assert it over real HTTP and a real browser. [`smoke/`](smoke) does the same against the **published** packages, not the workspace sources. CI runs build + typecheck + tests on every PR ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)); the browser E2E runs in [`e2e.yml`](.github/workflows/e2e.yml).
 
 ## Releasing
 

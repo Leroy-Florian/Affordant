@@ -2,14 +2,19 @@
   "name": "@affordant/demo",
   "version": "0.0.0",
   "private": true,
-  "description": "End-to-end demo: a real Express server emitting the Affordant envelope, consumed over HTTP by the vanilla client and the React adapter.",
+  "description": "End-to-end demo: Express and pure-Node backends emitting the Affordant envelope, consumed over HTTP by a vanilla JS front and a React front.",
   "type": "module",
   "scripts": {
     "start": "tsx src/start.ts express",
     "dev:express": "tsx src/start.ts express",
     "dev:node": "tsx src/start.ts node",
+    "web": "vite",
+    "build:web": "vite build",
+    "preview": "vite preview --port 4173 --strictPort",
     "typecheck": "tsc -p tsconfig.json",
-    "test": "vitest run"
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "e2e:install": "playwright install chromium"
   },
   "dependencies": {
     "@affordant/express": "*",
@@ -21,8 +26,11 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.49.0",
     "@types/express": "^5.0.0",
     "@types/node": "^22.0.0",
-    "tsx": "^4.19.0"
+    "@vitejs/plugin-react": "^4.3.0",
+    "tsx": "^4.19.0",
+    "vite": "^6.0.0"
   }
 }

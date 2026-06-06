@@ -49,6 +49,13 @@ export function createApp() {
     next()
   })
 
+  // Test-only: re-seed the store so each browser E2E starts from a clean state.
+  app.post('/reset', (_req: Request, res: Response) => {
+    orders.clear()
+    orders.set('8f3a2c', { id: '8f3a2c', ownerId: 'u1', total: 4200, status: 'pending' })
+    res.status(204).end()
+  })
+
   app.get('/orders/:id', (req: Request, res: Response) => {
     const order = orders.get(String(req.params.id))
     if (!order) {

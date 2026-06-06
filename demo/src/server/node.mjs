@@ -51,6 +51,15 @@ export function createApp() {
     }
 
     const path = (req.url ?? '').split('?')[0]
+
+    // Test-only: re-seed the store so each browser E2E starts from a clean state.
+    if (req.method === 'POST' && path === '/reset') {
+      orders.set('8f3a2c', { id: '8f3a2c', ownerId: 'u1', total: 4200, status: 'pending' })
+      res.writeHead(204, CORS)
+      res.end()
+      return
+    }
+
     const show = path.match(/^\/orders\/([^/]+)$/)
     const tracking = path.match(/^\/orders\/([^/]+)\/tracking$/)
     const cancel = path.match(/^\/orders\/([^/]+)\/cancel$/)
