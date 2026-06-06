@@ -8,6 +8,15 @@ import { getLang, setLang, T, type Lang } from './i18n.js'
 
 hljs.registerLanguage('javascript', javascript)
 
+// How this front consumes the contract — shown in the "Front" pane.
+const FRONT_CODE = `// Vanilla — affordant
+if (can(order, 'cancel')) {
+  const button = document.createElement('button')
+  button.textContent = 'Cancel'
+  button.onclick = () => follow(actionFor(order, 'cancel'), { token })
+  out.appendChild(button)
+}`
+
 type Order = { id: string; status: string }
 
 let lang = getLang()
@@ -35,6 +44,10 @@ function chrome() {
   el('lede').textContent = t.vanillaLede
   el('api-label').textContent = t.api
   el('owner-label').textContent = t.owner
+  el('front-title').textContent = `${t.front} · Vanilla`
+  el('front').innerHTML = `<code class="hljs language-javascript">${
+    hljs.highlight(FRONT_CODE, { language: 'javascript' }).value
+  }</code>`
   el('response-title').textContent = t.response
   el('nav-dashboard').textContent = t.navDashboard
   el('nav-react').textContent = t.navReact
