@@ -2,13 +2,7 @@
 
 Affordant is a small family in one npm-workspaces monorepo. They share a single wire contract and stay symmetric across the wire: the server builds what the client consumes.
 
-```
-                 ┌─ @affordant/contract (shared wire types) ─┐
-                 │                                           │
-   @affordant/server  ──builds──►  _self / _actions  ──reads──►  affordant   (can / actionFor / follow)
-        │                                                          │
-   @affordant/express                                        @affordant/react (hooks)
-```
+![How the Affordant packages fit together: @affordant/contract feeds both the server and the client; @affordant/server builds the _self / _actions envelope, which the affordant client reads; @affordant/express and @affordant/react sit alongside the server and client respectively.](/diagrams/packages.svg)
 
 | Package | Side | Depends on | What it does |
 |---|---|---|---|

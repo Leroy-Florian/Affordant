@@ -1,0 +1,12 @@
+{
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+    "fontSize": "15px",
+    "primaryColor": "#eef2ff",
+    "primaryBorderColor": "#6366f1",
+    "primaryTextColor": "#1e293b",
+    "lineColor": "#808080",
+    "edgeLabelBackground": "#e2e8f0"
+  }
+}
