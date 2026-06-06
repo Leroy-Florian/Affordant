@@ -27,7 +27,7 @@ Il réexporte les types de [`@affordant/contract`](/fr/reference/contract) par c
 function resource<T extends object>(data: T): ResourceBuilder<T>
 ```
 
-Démarre un constructeur fluide sur un objet simple. `data` est transporté tel quel jusqu'à la ressource de fil finale.
+Démarre un constructeur fluide sur un objet simple. `data` est transporté tel quel jusqu'à la ressource d'échange finale.
 
 ## `ResourceBuilder<T>`
 
@@ -69,7 +69,7 @@ interface ActionOptions {
 build(): HateoasResource<T>
 ```
 
-Renvoie la ressource de fil enrichie. `_actions` est toujours présent (éventuellement vide) ; `_self` n'apparaît que si `.self()` a été appelé.
+Renvoie la ressource d'échange enrichie. `_actions` est toujours présent (éventuellement vide) ; `_self` n'apparaît que si `.self()` a été appelé.
 
 ```ts
 resource({ id: '8f3a2c', status: 'pending' })

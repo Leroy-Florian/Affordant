@@ -100,7 +100,7 @@ export default defineConfig({
       label: 'Français',
       lang: 'fr-FR',
       description:
-        "Hypermédia orienté affordances (HATEOAS), des deux côtés du fil. Un client sans dépendances, un constructeur d'enveloppe côté serveur et un adaptateur React — le tout sur un contrat partagé.",
+        "Hypermédia piloté par les actions proposées (HATEOAS), des deux côtés de l'échange. Un client sans dépendances, un constructeur d'enveloppe côté serveur et un adaptateur React — le tout sur un contrat partagé.",
       themeConfig: {
         nav: [
           { text: 'Guide', link: '/fr/guide/getting-started' },
@@ -114,7 +114,7 @@ export default defineConfig({
               items: [
                 { text: 'Démarrage', link: '/fr/guide/getting-started' },
                 { text: 'Les paquets', link: '/fr/guide/packages' },
-                { text: 'Le contrat du fil', link: '/fr/guide/wire-contract' },
+                { text: "Le contrat d'échange", link: '/fr/guide/wire-contract' },
                 { text: 'Utilisation avec un framework', link: '/fr/guide/frameworks' },
                 { text: 'Côté serveur', link: '/fr/guide/server-side' },
               ],

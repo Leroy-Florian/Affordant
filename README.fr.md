@@ -2,7 +2,7 @@
 
 [English](README.md) · **Français**
 
-**Hypermédia orienté affordances (HATEOAS), des deux côtés du fil.** Arrêtez de réimplémenter vos règles d'autorisation dans le frontend — laissez les actions proposées par le serveur piloter votre UI, et laissez le serveur déclarer ces actions une seule fois.
+**Hypermédia piloté par les actions proposées (HATEOAS), des deux côtés de l'échange.** Arrêtez de réimplémenter vos règles d'autorisation dans le frontend — laissez les actions proposées par le serveur piloter votre UI, et laissez le serveur déclarer ces actions une seule fois.
 
 Le serveur enrichit chaque réponse avec `_self` et `_actions` ; la **présence d'un rel encode la permission**. Le client affiche un bouton à partir de la *présence* du lien — il ne redérive jamais « cet utilisateur peut-il faire X ? ».
 
@@ -23,18 +23,18 @@ Quiconque n'est pas le propriétaire n'obtient tout simplement pas le lien `canc
 
 ## Les paquets
 
-Ce dépôt est un monorepo npm-workspaces. Un seul contrat partagé, symétrique de chaque côté du fil :
+Ce dépôt est un monorepo npm-workspaces. Un seul contrat partagé, symétrique de chaque côté de l'échange :
 
 | Paquet | Côté | Ce qu'il fait |
 |---|---|---|
-| [`@affordant/contract`](packages/contract) | partagé | Les types du contrat de fil. Zéro exécution, zéro dépendance. Tout le reste en dépend. |
+| [`@affordant/contract`](packages/contract) | partagé | Les types du contrat d'échange. Zéro exécution, zéro dépendance. Tout le reste en dépend. |
 | [`affordant`](packages/client) | client | `can` / `actionFor` / `follow` — conditionne l'UI à ce que le serveur propose. Zéro dépendance d'exécution. |
-| [`@affordant/react`](packages/react) | client | Adaptateur React : conditionne l'UI aux affordances et les suit avec des hooks. |
+| [`@affordant/react`](packages/react) | client | Adaptateur React : conditionne l'UI aux actions proposées et les suit avec des hooks. |
 | [`@affordant/server`](packages/server) | serveur | Un constructeur qui émet l'enveloppe `_self` / `_actions`. Indépendant du framework. |
 | [`@affordant/express`](packages/express) | serveur | Adaptateur Express : envoie l'enveloppe et construit les URL à partir de la requête. |
 
 ```
-                 ┌─ @affordant/contract (types de fil partagés) ─┐
+                 ┌─ @affordant/contract (types d'échange partagés) ─┐
                  │                                               │
    @affordant/server  ──construit──►  _self / _actions  ──lit──►  affordant
         │                                                          │

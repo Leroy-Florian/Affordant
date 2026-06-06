@@ -1,6 +1,6 @@
 # `@affordant/react`
 
-L'adaptateur React. Conditionnez votre UI sur ce que le serveur propose, et suivez les affordances avec des hooks. Aucune dépendance d'exécution au-delà de React.
+L'adaptateur React. Conditionnez votre UI à ce que le serveur propose, et suivez les actions proposées avec des hooks. Aucune dépendance d'exécution au-delà de React.
 
 ```sh
 npm install @affordant/react react
@@ -41,7 +41,7 @@ interface UseFollowResult {
 }
 ```
 
-Suivre une affordance depuis un hook. Il suit `running` / `error` autour du [`follow`](/fr/reference/api#follow) du client ; `run` se résout avec la `Response` brute et relève l'erreur en cas d'échec (avec `error` renseigné).
+Suivre une action proposée depuis un hook. Il suit `running` / `error` autour du [`follow`](/fr/reference/api#follow) du client ; `run` se résout avec la `Response` brute et relève l'erreur en cas d'échec (avec `error` renseigné).
 
 ```tsx
 const cancel = useAffordance(order, 'cancel')
