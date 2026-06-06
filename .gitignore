@@ -5,3 +5,6 @@ docs/.vitepress/dist/
 *.tsbuildinfo
 *.tgz
 .vs/
+test-results/
+playwright-report/
+.playwright/

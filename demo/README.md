@@ -1,34 +1,37 @@
 # @affordant/demo
 
-An end-to-end demo proving the whole family works together over real HTTP. Not published.
+An end-to-end demo proving the family works together over real HTTP — across **two backends** and **two fronts**. Not published.
 
-A real **Express** server (`@affordant/server` + `@affordant/express`) emits the `_self` / `_actions` envelope, gating `cancel` on the caller and the order's state. Then the consumers hit it over HTTP and the tests assert the contract: *anonymous → no `cancel`; owner of a pending order → `cancel` offered; after `follow(cancel)` → the action is gone.*
+The contract is the only thing in the middle, so any producer pairs with any consumer:
 
-## Run it
+|  | Express backend | Node backend (100% JS) |
+|---|---|---|
+| **Vanilla JS front** | ✓ | ✓ |
+| **React front** | ✓ | ✓ |
 
-```sh
-npm run demo        # from the repo root — boots the server and prints curl hints
-```
+- Backends emit the same `_self` / `_actions` envelope, gating `cancel` on the caller and the order's state:
+  - `src/server/express.ts` — Express + `@affordant/server` + `@affordant/express`
+  - `src/server/node.mjs` — raw `node:http`, 100% JavaScript, `@affordant/server` only (no framework)
+- Fronts consume it:
+  - `src/front/flow.ts` — vanilla, plain `affordant` calls
+  - `src/front/OrderCard.tsx` — React, `@affordant/react` hooks
 
-```sh
-curl http://127.0.0.1:PORT/orders/8f3a2c | jq ._actions                          # only "track"
-curl -H 'authorization: Bearer u1' .../orders/8f3a2c | jq ._actions             # "track" + "cancel"
-curl -X POST -H 'authorization: Bearer u1' .../orders/8f3a2c/cancel | jq ._actions
-```
-
-## What the E2E suites cover
-
-Each runs against a freshly booted server on an ephemeral port:
-
-| Suite | Packages exercised |
-|---|---|
-| `vanilla.e2e` | `affordant` (`can` / `actionFor` / `follow`) + `@affordant/server` + `@affordant/express` |
-| `react.e2e` | `@affordant/react` (`useAffordance`, `useFollow`) in jsdom |
-
-Together they touch every package against a real server.
+## Automated verification
 
 ```sh
-npm test            # from the repo root — builds, then runs unit + E2E
+npm test          # from the repo root — the 2 fronts × 2 backends matrix (HTTP, jsdom)
+npm run e2e       # browser E2E: drives both fronts in a real browser (Playwright)
 ```
 
-For the published artifacts (not the workspace sources), see [`../smoke`](../smoke).
+`tests/{vanilla,react}.e2e.test.*` run each front against **both** backends. `e2e/*.spec.ts` open the actual browser pages and click through the contract. (Run `npm run e2e:install` once to fetch the browser.)
+
+## Run it by hand
+
+```sh
+npm run dev:express        # or: npm run dev:node — backend on http://localhost:8787
+npm run web                # Vite dev server with both browser fronts
+```
+
+Open the React front, tick *Authenticated as owner* and watch the **Cancel** button appear; click it and it vanishes once the order is cancelled. The vanilla page (`/vanilla.html`) does the same with no framework. Both talk to whichever backend is on `:8787`.
+
+For the **published** packages (not the workspace sources), see [`../smoke`](../smoke).

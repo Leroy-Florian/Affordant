@@ -1,0 +1,34 @@
+name: E2E (browser)
+
+# Drives the browser demos (React + vanilla fronts) with Playwright against
+# the Express backend. Kept separate from the main CI because it installs a
+# browser. Runs on demand and on pushes to main.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+        working-directory: demo
+
+      - name: Run browser E2E
+        run: npm run e2e -w @affordant/demo
+        env:
+          CI: 'true'

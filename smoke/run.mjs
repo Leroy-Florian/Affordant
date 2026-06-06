@@ -31,13 +31,15 @@ try {
   cpSync(join(here, 'check.mjs'), join(dir, 'check.mjs'))
 
   console.log(`Installing published packages into ${dir} ...`)
+  // shell: true so `npm` resolves to `npm.cmd` on Windows (execFileSync can't otherwise).
   execFileSync('npm', ['install', '--no-audit', '--no-fund', '--loglevel=error'], {
     cwd: dir,
     stdio: 'inherit',
+    shell: true,
   })
 
   console.log('Running smoke check against published artifacts ...')
-  execFileSync('node', ['check.mjs'], { cwd: dir, stdio: 'inherit' })
+  execFileSync('node', ['check.mjs'], { cwd: dir, stdio: 'inherit', shell: true })
 } finally {
   rmSync(dir, { recursive: true, force: true })
 }

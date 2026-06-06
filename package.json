@@ -26,6 +26,8 @@
     "pretest": "npm run build",
     "test": "vitest run",
     "demo": "npm start -w @affordant/demo",
+    "demo:web": "npm run web -w @affordant/demo",
+    "e2e": "npm run e2e -w @affordant/demo",
     "smoke": "node smoke/run.mjs",
     "changeset": "changeset",
     "changeset:version": "changeset version && npm install --package-lock-only",

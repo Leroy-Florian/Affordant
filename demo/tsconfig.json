@@ -8,9 +8,17 @@
     "noUncheckedIndexedAccess": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "allowJs": true,
     "jsx": "react-jsx",
     "types": ["node"],
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "affordant": ["../packages/client/src/index.ts"],
+      "@affordant/contract": ["../packages/contract/src/index.ts"],
+      "@affordant/server": ["../packages/server/src/index.ts"],
+      "@affordant/express": ["../packages/express/src/index.ts"],
+      "@affordant/react": ["../packages/react/src/index.ts"]
+    }
   },
   "include": ["src", "tests"]
 }
