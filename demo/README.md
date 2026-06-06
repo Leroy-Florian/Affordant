@@ -2,7 +2,7 @@
 
 An end-to-end demo proving the whole family works together over real HTTP. Not published.
 
-A real **Express** server (`@affordant/server` + `@affordant/express`) emits the `_self` / `_actions` envelope, gating `cancel` on the caller and the order's state. Then every consumer hits it over HTTP and the tests assert the contract: *anonymous → no `cancel`; owner of a pending order → `cancel` offered; after `follow(cancel)` → the action is gone.*
+A real **Express** server (`@affordant/server` + `@affordant/express`) emits the `_self` / `_actions` envelope, gating `cancel` on the caller and the order's state. Then the consumers hit it over HTTP and the tests assert the contract: *anonymous → no `cancel`; owner of a pending order → `cancel` offered; after `follow(cancel)` → the action is gone.*
 
 ## Run it
 
@@ -23,11 +23,9 @@ Each runs against a freshly booted server on an ephemeral port:
 | Suite | Packages exercised |
 |---|---|
 | `vanilla.e2e` | `affordant` (`can` / `actionFor` / `follow`) + `@affordant/server` + `@affordant/express` |
-| `effect.e2e` | `@affordant/effect` (Effect invoker, typed errors) |
 | `react.e2e` | `@affordant/react` (`useAffordance`, `useFollow`) in jsdom |
-| `react-effect.e2e` | `effect-react-bridge` + `@affordant/react/effect` + `@affordant/effect` composed |
 
-Together they touch all seven packages against a real server.
+Together they touch every package against a real server.
 
 ```sh
 npm test            # from the repo root — builds, then runs unit + E2E

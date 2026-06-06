@@ -9,8 +9,6 @@ import express from 'express'
 import { resource } from '@affordant/server'
 import { sendResource, urlFor } from '@affordant/express'
 import { can, actionFor, follow } from 'affordant'
-import { Effect } from 'effect'
-import { follow as effectFollow } from '@affordant/effect'
 
 function serialize(req, order) {
   const me = req.get('authorization')?.replace('Bearer ', '') || null
@@ -59,21 +57,11 @@ try {
   // 2. vanilla follow performs the cancel; the action then disappears
   const res = await follow(actionFor(owner, 'cancel'), { token: 'u1' })
   assert.equal(res.ok, true, 'cancel must succeed')
-  assert.equal((await res.json()).status, 'cancelled', 'status must be cancelled')
+  const cancelled = await res.json()
+  assert.equal(cancelled.status, 'cancelled', 'status must be cancelled')
+  assert.equal(can(cancelled, 'cancel'), false, 'cancel must be gone after cancelling')
 
-  // 3. Effect invoker against the same (published) server
-  const fresh = await new Promise((resolve) => {
-    const s = createApp().listen(0, () => resolve(s))
-  })
-  const fbase = `http://127.0.0.1:${fresh.address().port}`
-  const fowner = await fetch(`${fbase}/orders/8f3a2c`, {
-    headers: { authorization: 'Bearer u1' },
-  }).then((r) => r.json())
-  const eres = await Effect.runPromise(effectFollow(actionFor(fowner, 'cancel'), { token: 'u1' }))
-  assert.equal(eres.ok, true, 'effect cancel must succeed')
-  fresh.close()
-
-  console.log('SMOKE OK — published artifacts work: vanilla client, Effect invoker, server, express.')
+  console.log('SMOKE OK — published artifacts work: vanilla client, server, express.')
 } finally {
   server.close()
 }

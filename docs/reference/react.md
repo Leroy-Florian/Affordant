@@ -1,12 +1,12 @@
 # `@affordant/react`
 
-The React adapter. Gate UI on what the server offers, and invoke affordances with **either** invoker — the vanilla Promise one or the Effect one. The framework axis and the effect-system axis stay [orthogonal](/guide/invokers).
+The React adapter. Gate your UI on what the server offers, and follow affordances with hooks. No runtime dependency beyond React.
 
 ```sh
 npm install @affordant/react react
 ```
 
-`react` is a peer dependency. `effect`, `effect-react-bridge`, and `@affordant/effect` are **optional** peers, needed only for the [`/effect` subpath](#effect-subpath). The package re-exports the contract types and `FollowInit`.
+`react` is a peer dependency. The package re-exports the contract types and `FollowInit`.
 
 ## `useAffordance`
 
@@ -22,7 +22,7 @@ interface Affordance {
 }
 ```
 
-A memoised, **invoker-agnostic** read: it wraps `can` and `actionFor` for the `(resource, rel)` you hold. Null-safe, so it is fine to call while data is still loading.
+A memoised read: it wraps `can` and `actionFor` for the `(resource, rel)` you hold. Null-safe, so it is fine to call while data is still loading.
 
 ```tsx
 const cancel = useAffordance(order, 'cancel')
@@ -41,7 +41,7 @@ interface UseFollowResult {
 }
 ```
 
-The **Promise** invoker as a hook. It tracks `running` / `error` around the client's [`follow`](/reference/api#follow); `run` resolves with the raw `Response` and re-throws on failure (with `error` set).
+Follow an affordance from a hook. It tracks `running` / `error` around the client's [`follow`](/reference/api#follow); `run` resolves with the raw `Response` and re-throws on failure (with `error` set).
 
 ```tsx
 const cancel = useAffordance(order, 'cancel')
@@ -52,35 +52,6 @@ const { run, running } = useFollow()
 </button>
 ```
 
-## The `/effect` subpath {#effect-subpath}
+## Using Effect
 
-```ts
-import { makeAffordanceHooks } from '@affordant/react/effect'
-```
-
-Runs the [Effect invoker](/reference/effect) through an [`effect-react-bridge`](/reference/effect-react-bridge) runtime. This is the thin Affordant-specific glue; the bridge itself stays domain-agnostic.
-
-```ts
-function makeAffordanceHooks<R>(hooks: EffectHooks<R>): AffordanceEffectHooks
-
-interface AffordanceEffectHooks {
-  useFollow(): EffectFollowResult
-}
-
-interface EffectFollowResult {
-  readonly running: boolean
-  readonly error: FollowError | null
-  readonly run: (action: HateoasAction, init?: FollowInit) => Promise<Response>
-}
-```
-
-```ts
-import { makeEffectHooks } from 'effect-react-bridge'
-import { makeAffordanceHooks } from '@affordant/react/effect'
-
-const bridge = makeEffectHooks({ runtime })           // your ManagedRuntime
-const { useFollow } = makeAffordanceHooks(bridge)
-// useFollow().run(action, init) runs the Effect invoker, interruptible, with a typed error
-```
-
-Importing this subpath is what pulls in the optional Effect peers; the vanilla path above never touches them.
+There is no Effect-specific entry point, and none is needed: `run` (and the underlying `follow`) return a `Promise<Response>`, which drops into Effect with a one-line wrap — `Effect.tryPromise(() => follow(action, init))`. Affordant stays Effect-compatible without shipping an Effect dependency.

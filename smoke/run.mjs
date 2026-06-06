@@ -22,8 +22,6 @@ const pkg = {
     affordant: 'latest',
     '@affordant/server': 'latest',
     '@affordant/express': 'latest',
-    '@affordant/effect': 'latest',
-    effect: '^3.21.0',
     express: '^5.0.0',
   },
 }

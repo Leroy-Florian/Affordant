@@ -42,9 +42,9 @@ export interface UseFollowResult extends FollowState {
 }
 
 /**
- * The vanilla (Promise) invoker as a hook: tracks `running` / `error` around
- * the client's `follow`. This is one of Affordant's two interchangeable
- * invokers; for the Effect one, see `@affordant/react/effect`.
+ * Follow an affordance from a hook: tracks `running` / `error` around the
+ * client's `follow`. `run` resolves with the raw `Response` and re-throws on
+ * failure (with `error` set).
  */
 export function useFollow(): UseFollowResult {
   const [state, setState] = useState<FollowState>({ running: false, error: null })
