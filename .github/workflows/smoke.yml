@@ -1,0 +1,23 @@
+name: Smoke (published artifacts)
+
+# Verifies the LATEST published packages on npm actually work for a real
+# consumer: installs them in a throwaway project and replays the demo flow.
+# Run on demand, and weekly to catch a broken publish.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1' # Mondays 06:00 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Smoke test published artifacts
+        run: node smoke/run.mjs

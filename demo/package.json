@@ -1,0 +1,29 @@
+{
+  "name": "@affordant/demo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "End-to-end demo: a real Express server emitting the Affordant envelope, consumed over HTTP by the vanilla client, the Effect invoker, and the React adapter.",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/start.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@affordant/effect": "*",
+    "@affordant/express": "*",
+    "@affordant/react": "*",
+    "@affordant/server": "*",
+    "affordant": "*",
+    "effect": "^3.21.0",
+    "effect-react-bridge": "*",
+    "express": "^5.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0"
+  }
+}

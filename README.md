@@ -99,7 +99,12 @@ npm install        # installs all workspaces
 npm run build      # builds every package (contract first)
 npm test           # runs every package's tests
 npm run typecheck  # type-checks every package
+npm test           # unit tests + end-to-end demo suites
+npm run demo       # boot the live demo server (see demo/)
+npm run smoke      # verify the published npm artifacts (see smoke/)
 ```
+
+The [`demo/`](demo) package is a real Express server consumed over HTTP by the vanilla client, the Effect invoker, and the React adapter — the E2E suites assert the whole contract across all seven packages. [`smoke/`](smoke) does the same against the **published** packages, not the workspace sources. CI runs build + typecheck + tests on every PR ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 
 ## Releasing
 

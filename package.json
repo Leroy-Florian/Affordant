@@ -19,12 +19,16 @@
     "packages/effect",
     "packages/react",
     "packages/server",
-    "packages/express"
+    "packages/express",
+    "demo"
   ],
   "scripts": {
     "build": "npm run build -w @affordant/contract && npm run build -w affordant && npm run build -w effect-react-bridge && npm run build -w @affordant/effect && npm run build -w @affordant/react && npm run build -w @affordant/server && npm run build -w @affordant/express",
     "typecheck": "npm run build && npm run typecheck --workspaces --if-present",
+    "pretest": "npm run build",
     "test": "vitest run",
+    "demo": "npm start -w @affordant/demo",
+    "smoke": "node smoke/run.mjs",
     "changeset": "changeset",
     "changeset:version": "changeset version && npm install --package-lock-only",
     "release": "npm run build && changeset publish",
