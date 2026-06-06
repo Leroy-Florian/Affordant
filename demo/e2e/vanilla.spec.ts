@@ -2,7 +2,8 @@ import { expect, test } from '@playwright/test'
 
 const BACKEND = 'http://localhost:8787'
 
-test.beforeEach(async ({ request }) => {
+test.beforeEach(async ({ page, request }) => {
+  await page.addInitScript(() => localStorage.setItem('affordant-lang', 'en'))
   await request.post(`${BACKEND}/reset`)
 })
 

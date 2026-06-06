@@ -7,12 +7,15 @@
   </head>
   <body>
     <div class="container">
-      <h1>Affordant <span class="sub">· Dashboard</span></h1>
-      <p class="lede">All demo services, wired together. Backends show live status; fronts are pages served here. Click any to open it.</p>
+      <div class="header">
+        <h1 id="title"></h1>
+        <div class="lang" id="lang"></div>
+      </div>
+      <p class="lede" id="lede"></p>
       <div class="card">
         <table>
           <thead>
-            <tr><th>Status</th><th>Service</th><th>Kind</th><th></th></tr>
+            <tr><th id="th-status"></th><th id="th-service"></th><th id="th-kind"></th><th></th></tr>
           </thead>
           <tbody id="rows"></tbody>
         </table>

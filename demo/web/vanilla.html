@@ -7,17 +7,20 @@
   </head>
   <body>
     <div class="container">
-      <h1>Affordant <span class="sub">· Vanilla JS front</span></h1>
-      <p class="lede">Same contract, no framework: plain <code>affordant</code> calls drive the UI. It reacts as you change the API or the owner toggle.</p>
+      <div class="header">
+        <h1 id="title"></h1>
+        <div class="lang" id="lang"></div>
+      </div>
+      <p class="lede" id="lede"></p>
 
       <div class="card">
         <div class="controls">
           <label class="field">
-            API <img id="logo" class="logo" alt="" />
+            <span id="api-label"></span> <img id="logo" class="logo" alt="" />
             <select id="backend"></select>
           </label>
           <label class="switch">
-            <input type="checkbox" id="owner" /> Authenticated as owner (u1)
+            <input type="checkbox" id="owner" /> <span id="owner-label"></span>
           </label>
         </div>
 
@@ -25,19 +28,19 @@
 
         <div class="panes">
           <div class="pane">
-            <h3 id="controller-title">Controller</h3>
+            <h3 id="controller-title"></h3>
             <pre id="controller" class="code"></pre>
           </div>
           <div class="pane">
-            <h3>Response</h3>
+            <h3 id="response-title"></h3>
             <pre id="response" class="json" data-testid="response"></pre>
           </div>
         </div>
       </div>
 
       <nav class="nav">
-        <a href="/">← Dashboard</a>
-        <a href="/react.html">React front →</a>
+        <a href="/" id="nav-dashboard"></a>
+        <a href="/react.html" id="nav-react"></a>
       </nav>
     </div>
     <script type="module" src="/vanilla.ts"></script>

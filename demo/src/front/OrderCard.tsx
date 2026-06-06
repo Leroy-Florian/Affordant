@@ -8,11 +8,16 @@ export function OrderCard({
   baseUrl,
   token,
   onLoaded,
+  orderLabel = 'Order',
+  cancelLabel = 'Cancel',
 }: {
   baseUrl: string
   token?: string
   /** Called with each freshly loaded resource — lets a parent show the raw response. */
   onLoaded?: (order: HateoasResource<Order>) => void
+  /** UI labels (defaults keep tests language-agnostic). */
+  orderLabel?: string
+  cancelLabel?: string
 }) {
   const [order, setOrder] = useState<HateoasResource<Order> | null>(null)
 
@@ -30,11 +35,13 @@ export function OrderCard({
   const cancel = useAffordance(order, 'cancel')
   const { run, running } = useFollow()
 
-  if (!order) return <p>Loading…</p>
+  if (!order) return null
 
   return (
     <div className="order">
-      <span>Order {order.id}</span>
+      <span>
+        {orderLabel} {order.id}
+      </span>
       <span className={`badge badge-${order.status}`} data-testid="status">
         {order.status}
       </span>
@@ -47,7 +54,7 @@ export function OrderCard({
             load()
           }}
         >
-          Cancel
+          {cancelLabel}
         </button>
       )}
     </div>
