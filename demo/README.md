@@ -33,6 +33,6 @@ npm run demo        # from the repo root — starts both backends + the web, wir
 
 Open the **dashboard** at <http://localhost:5173>: a small Aspire-like board listing every service — Express API (`:8787`), Node API (`:8788`), and the React & vanilla fronts — with **live up/down status** and one-click links.
 
-From there, open the React front, tick *Authenticated as owner*, and watch the **Cancel** button appear; click it and it vanishes once the order is cancelled. The vanilla front does the same with no framework. (Need just one piece? `npm run dev:express`, `npm run dev:node`, or `npm run web`.)
+From there, open either front (React or vanilla). Each has an **API picker** (Express / Node, with logo), an *owner* toggle, the **controller code** for the selected API, and the **live JSON response** — so you can watch the controller's `when` flip the `cancel` link in the response, and the button appear/vanish with it. Both fronts are reactive. (Need just one piece? `npm run dev:express`, `npm run dev:node`, or `npm run web`.)
 
 For the **published** packages (not the workspace sources), see [`../smoke`](../smoke).

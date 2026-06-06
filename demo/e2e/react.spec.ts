@@ -20,6 +20,6 @@ test('React front: Cancel is gated on the owner affordance', async ({ page }) =>
 
   // follow it → the action disappears, state is cancelled
   await cancel.click()
-  await expect(page.getByText(/cancelled/)).toBeVisible()
   await expect(page.getByRole('button', { name: 'Cancel' })).toHaveCount(0)
+  await expect(page.getByTestId('status')).toHaveText('cancelled')
 })
