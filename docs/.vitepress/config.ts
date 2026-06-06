@@ -10,6 +10,8 @@ export default defineConfig({
   base: '/Affordant/',
   cleanUrls: true,
   lastUpdated: true,
+  // Mermaid sources / tooling notes, not site pages.
+  srcExclude: ['diagrams/**'],
   themeConfig: {
     socialLinks: [{ icon: 'github', link: 'https://github.com/Leroy-Florian/Affordant' }],
     search: {
