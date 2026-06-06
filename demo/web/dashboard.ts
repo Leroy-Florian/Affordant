@@ -1,3 +1,4 @@
+import './styles.css'
 import { backends } from './backends.js'
 
 type Row = { name: string; kind: 'backend' | 'front'; href: string; health?: string; logo?: string }
@@ -22,8 +23,8 @@ rows.innerHTML = resources
     (r, i) =>
       `<tr>` +
       `<td><span class="dot" id="dot${i}"></span></td>` +
-      `<td>${r.logo ? `<img src="${r.logo}" width="18" height="18" alt="" style="vertical-align:-4px;margin-right:.4rem" />` : ''}${r.name}</td>` +
-      `<td>${r.kind}</td>` +
+      `<td><span class="svc">${r.logo ? `<img class="logo" src="${r.logo}" alt="" />` : ''}${r.name}</span></td>` +
+      `<td class="kind">${r.kind}</td>` +
       `<td><a href="${r.href}" target="_blank" rel="noreferrer">open ↗</a></td>` +
       `</tr>`,
   )

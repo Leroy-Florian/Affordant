@@ -1,3 +1,4 @@
+import './styles.css'
 import { actionFor, can, follow, type HateoasResource } from 'affordant'
 import { backends } from './backends.js'
 
@@ -34,16 +35,19 @@ async function render() {
   ).then((r) => r.json())
 
   response.textContent = JSON.stringify(order, null, 2)
-  out.innerHTML = `<p>Order ${order.id} — <strong data-testid="status">${order.status}</strong></p>`
+  out.innerHTML =
+    `<div class="order"><span>Order ${order.id}</span>` +
+    `<span class="badge badge-${order.status}" data-testid="status">${order.status}</span></div>`
 
   if (can(order, 'cancel')) {
     const button = document.createElement('button')
+    button.className = 'action'
     button.textContent = 'Cancel'
     button.onclick = async () => {
       await follow(actionFor(order, 'cancel')!, { token })
       render()
     }
-    out.appendChild(button)
+    out.querySelector('.order')!.appendChild(button)
   }
 }
 

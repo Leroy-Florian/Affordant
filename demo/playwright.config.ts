@@ -18,6 +18,11 @@ export default defineConfig({
       reuseExistingServer: !process.env.CI,
     },
     {
+      command: 'npm run dev:node',
+      url: 'http://localhost:8788/health',
+      reuseExistingServer: !process.env.CI,
+    },
+    {
       command: 'npm run web -- --port 4173 --strictPort',
       url: WEB,
       reuseExistingServer: !process.env.CI,

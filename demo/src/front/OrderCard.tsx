@@ -33,12 +33,14 @@ export function OrderCard({
   if (!order) return <p>Loading…</p>
 
   return (
-    <div>
-      <p>
-        Order {order.id} — <strong data-testid="status">{order.status}</strong>
-      </p>
+    <div className="order">
+      <span>Order {order.id}</span>
+      <span className={`badge badge-${order.status}`} data-testid="status">
+        {order.status}
+      </span>
       {cancel.can && (
         <button
+          className="action"
           disabled={running}
           onClick={async () => {
             await run(cancel.action!, { token })

@@ -4,38 +4,42 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Affordant — Vanilla JS front</title>
-    <style>
-      body { font-family: system-ui; max-width: 880px; margin: 2rem auto; line-height: 1.5; }
-      .row { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
-      .panes { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; }
-      pre { background: #0b1021; color: #e2e8f0; padding: 0.75rem 1rem; border-radius: 8px; overflow: auto; font-size: 12px; line-height: 1.45; margin: 0; }
-      a { color: #2563eb; }
-    </style>
   </head>
   <body>
-    <h1>Affordant — Vanilla JS front</h1>
-    <p>Same contract, no framework: plain <code>affordant</code> calls drive the UI. It reacts as you change the API or the owner toggle.</p>
-    <p class="row">
-      <label class="row" style="gap: 0.5rem">
-        API <img id="logo" width="20" height="20" alt="" />
-        <select id="backend"></select>
-      </label>
-      <label class="row" style="gap: 0.4rem">
-        <input type="checkbox" id="owner" /> Authenticated as owner (u1)
-      </label>
-    </p>
-    <div id="out"></div>
-    <div class="panes">
-      <section>
-        <h3 id="controller-title">Controller</h3>
-        <pre id="controller"></pre>
-      </section>
-      <section>
-        <h3>Response</h3>
-        <pre id="response" data-testid="response"></pre>
-      </section>
+    <div class="container">
+      <h1>Affordant <span class="sub">· Vanilla JS front</span></h1>
+      <p class="lede">Same contract, no framework: plain <code>affordant</code> calls drive the UI. It reacts as you change the API or the owner toggle.</p>
+
+      <div class="card">
+        <div class="controls">
+          <label class="field">
+            API <img id="logo" class="logo" alt="" />
+            <select id="backend"></select>
+          </label>
+          <label class="switch">
+            <input type="checkbox" id="owner" /> Authenticated as owner (u1)
+          </label>
+        </div>
+
+        <div id="out"></div>
+
+        <div class="panes">
+          <div class="pane">
+            <h3 id="controller-title">Controller</h3>
+            <pre id="controller"></pre>
+          </div>
+          <div class="pane">
+            <h3>Response</h3>
+            <pre id="response" data-testid="response"></pre>
+          </div>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a href="/">← Dashboard</a>
+        <a href="/react.html">React front →</a>
+      </nav>
     </div>
-    <p style="margin-top: 1.5rem"><a href="/">← Dashboard</a> · <a href="/react.html">React front →</a></p>
     <script type="module" src="/vanilla.ts"></script>
   </body>
 </html>
