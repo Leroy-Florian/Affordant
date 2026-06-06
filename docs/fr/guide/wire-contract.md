@@ -1,6 +1,6 @@
-# Le contrat du fil
+# Le contrat d'échange
 
-Affordant fonctionne sur une convention simple : le serveur enrichit chaque ressource avec `_self` et `_actions`. Chaque action est `{ href, method, accepts? }`, et la **présence d'un rel encode la permission**.
+Affordant repose sur une convention simple : le serveur enrichit chaque ressource avec `_self` et `_actions`. Chaque action est `{ href, method, accepts? }`, et la **présence d'un rel encode la permission**.
 
 ## L'enveloppe
 
@@ -16,7 +16,7 @@ Affordant fonctionne sur une convention simple : le serveur enrichit chaque ress
   }
 }
 
-// même requête, le propriétaire de la commande → une affordance de plus
+// même requête, le propriétaire de la commande → une action de plus
   "_actions": {
     "track":  { "href": "...", "method": "GET" },
     "cancel": { "href": "/orders/8f3a2c/cancel", "method": "POST" }
@@ -42,7 +42,7 @@ type HateoasResource<T> = T & {
 }
 ```
 
-- **`href`** — où vit l'action. Il provient du routeur du serveur, jamais codé en dur dans le client.
+- **`href`** — où se trouve l'action. Il provient du routeur du serveur, jamais codé en dur dans le client.
 - **`method`** — le verbe HTTP à utiliser. Le client ne le devine pas.
 - **`accepts`** — le type de média que l'action attend dans le corps de la requête. Omis, Affordant envoie `application/json`.
 
@@ -54,6 +54,6 @@ Un rel est **absent** dès que l'action n'est pas disponible pour *cet* appelant
 - mauvais état (la commande est déjà expédiée, le brouillon est déjà publié),
 - fonctionnalité désactivée (flag désactivé, le forfait ne l'inclut pas).
 
-Le client n'a pas besoin de savoir *laquelle* de ces raisons s'applique. Il demande `can(order, 'cancel')` et fait confiance à la réponse. Toute cette logique de branchement reste sur le serveur, là où vit l'état faisant autorité — et la modifier ne requiert jamais de déploiement du frontend.
+Le client n'a pas besoin de savoir *laquelle* de ces raisons s'applique. Il demande `can(order, 'cancel')` et fait confiance à la réponse. Toute cette logique de branchement reste sur le serveur, là où réside l'état faisant autorité — et la modifier ne requiert jamais de déploiement du frontend.
 
 C'est le **niveau 3** du modèle de maturité de Richardson, vu du côté du consommateur : le client est piloté par les contrôles que le serveur lui remet.

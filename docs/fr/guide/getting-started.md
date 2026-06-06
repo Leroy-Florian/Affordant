@@ -1,6 +1,6 @@
 # Démarrage
 
-Affordant est un **client hypermédia (HATEOAS) orienté affordances**. Le serveur indique à votre frontend quelles actions sont disponibles ; votre UI s'affiche à partir de cela, au lieu de redériver les règles d'autorisation côté client.
+Affordant est un **client hypermédia (HATEOAS) piloté par les actions proposées**. Le serveur indique à votre frontend quelles actions sont disponibles ; votre UI s'affiche à partir de cela, au lieu de redériver les règles d'autorisation côté client.
 
 ## Installation
 
@@ -42,7 +42,7 @@ if (can(order, 'cancel')) {
 
 ## Plus que le client
 
-`affordant` est le client, mais il fait partie d'une petite famille partageant un unique contrat de fil :
+`affordant` est le client, mais il fait partie d'une petite famille partageant un unique contrat d'échange :
 
 - [`@affordant/server`](/fr/reference/server) construit l'enveloppe côté backend — le miroir de `can()`.
 - [`@affordant/express`](/fr/reference/server) est un adaptateur Express léger pour celui-ci.
@@ -53,6 +53,6 @@ Voir [les paquets](/fr/guide/packages) pour la carte complète, ou continuez sim
 ## Étapes suivantes
 
 - Parcourez [les paquets](/fr/guide/packages) et comment ils s'imbriquent.
-- Comprenez [le contrat du fil](/fr/guide/wire-contract) émis par le serveur.
+- Comprenez [le contrat d'échange](/fr/guide/wire-contract) émis par le serveur.
 - Voir [l'utilisation avec un framework](/fr/guide/frameworks) pour React, Vue, Svelte et vanilla.
 - Lisez la [référence d'API](/fr/reference/api) complète.

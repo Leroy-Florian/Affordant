@@ -3,7 +3,7 @@ layout: home
 
 hero:
   name: Affordant
-  text: L'hypermédia orienté affordances, des deux côtés du fil
+  text: L'hypermédia piloté par les actions proposées, des deux côtés de l'échange
   tagline: Arrêtez de réimplémenter votre autorisation dans le frontend. Le serveur déclare les actions qu'il propose ; votre UI s'affiche à partir d'elles.
   actions:
     - theme: brand
@@ -42,9 +42,9 @@ if (can(order, 'cancel')) {                        // 1. Que me propose le serve
 
 Si le backend cesse de proposer une action — non autorisé, mauvais état, fonctionnalité désactivée — le bouton disparaît. Aucun déploiement du frontend.
 
-## L'autre côté du fil
+## L'autre côté de l'échange
 
-Le serveur déclare ces mêmes affordances une seule fois, en conditionnant chacune à l'état faisant autorité. Quand `when` est faux, le rel n'est jamais émis — donc `can()` renvoie faux côté client.
+Le serveur déclare ces mêmes actions une seule fois, en conditionnant chacune à l'état faisant autorité. Quand `when` est faux, le rel n'est jamais émis — donc `can()` renvoie faux côté client.
 
 ```ts
 import { resource } from '@affordant/server'

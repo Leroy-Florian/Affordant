@@ -58,7 +58,7 @@ Votre ressource `T`, enrichie de contrôles hypermédia. `_actions` associe une 
 function can<T>(resource: HateoasResource<T> | null | undefined, rel: string): boolean
 ```
 
-Prédicat d'affordance : le serveur propose-t-il actuellement `rel` sur cette ressource ? Pilote l'UI conditionnelle sans dupliquer les règles d'autorisation côté client.
+Prédicat de disponibilité : le serveur propose-t-il actuellement `rel` sur cette ressource ? Pilote l'UI conditionnelle sans dupliquer les règles d'autorisation côté client.
 
 - Renvoie `false` pour les ressources `null` / `undefined` et pour les ressources sans `_actions`.
 - Seules les propriétés propres de `_actions` comptent — les propriétés héritées sont ignorées.

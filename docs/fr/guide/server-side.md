@@ -8,7 +8,7 @@ Deux règles en font une démarche qui en vaut la peine.
 
 N'émettez qu'une action que l'appelant a le droit d'exécuter, décidé **côté serveur, à chaque réponse**. L'endpoint qui construit la ressource connaît déjà l'identité de l'appelant, l'état de la ressource et les flags de fonctionnalités actifs — c'est donc le bon endroit pour décider quelles actions exposer.
 
-Avec `@affordant/server`, vous déclarez chaque affordance une fois et la conditionnez avec `when` :
+Avec `@affordant/server`, vous déclarez chaque action proposée une fois et la conditionnez avec `when` :
 
 ```ts
 import { resource } from '@affordant/server'
@@ -52,13 +52,13 @@ return {
 
 ## N'importe quel langage, n'importe quelle stack
 
-L'enveloppe est le seul contrat — `@affordant/server` est une commodité, pas une obligation. Un backend en **pur Node JS** peut l'émettre avec un simple littéral objet et aucune dépendance Affordant. Un backend dans **n'importe quel autre langage** aussi : Python, Go, Ruby, .NET. Le client ne se soucie que du JSON `_self` / `_actions` qu'il reçoit, donc un utilitaire compagnon sur n'importe quelle stack n'est que de l'ergonomie sur le même contrat de fil.
+L'enveloppe est le seul contrat — `@affordant/server` est une commodité, pas une obligation. Un backend en **pur Node JS** peut l'émettre avec un simple littéral objet et aucune dépendance Affordant. Un backend dans **n'importe quel autre langage** aussi : Python, Go, Ruby, .NET. Le client ne se soucie que du JSON `_self` / `_actions` qu'il reçoit, donc un utilitaire compagnon sur n'importe quelle stack n'est que de l'ergonomie sur le même contrat d'échange.
 
 ## Liste de contrôle pour émettre l'enveloppe
 
 - Chaque ressource porte `_self` (pour que les clients puissent la rafraîchir) et `_actions` (éventuellement vide).
 - Chaque action est `{ href, method, accepts? }`. Définissez `accepts` quand le corps n'est pas `application/json`.
 - Décidez de la présence de chaque action à partir de l'**état faisant autorité côté serveur** — identité, état de la ressource, flags de fonctionnalités.
-- Construisez `href` à partir de routes nommées ; ne concaténez jamais de chaînes du côté client du fil.
+- Construisez `href` à partir de routes nommées ; ne concaténez jamais de chaînes du côté client de l'échange.
 
-Voilà tout le contrat. Le côté client est documenté dans [le contrat du fil](/fr/guide/wire-contract).
+Voilà tout le contrat. Le côté client est documenté dans [le contrat d'échange](/fr/guide/wire-contract).
