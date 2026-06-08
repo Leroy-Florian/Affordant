@@ -36,6 +36,7 @@ interface ResourceBuilder<T> {
   self(href: string, opts?: SelfOptions): ResourceBuilder<T>
   action(rel: string, href: string, opts?: ActionOptions): ResourceBuilder<T>
   build(): HateoasResource<T>
+  buildAsync(): Promise<HateoasResource<T>>
 }
 ```
 
@@ -57,11 +58,27 @@ Offers `rel` at `href`.
 interface ActionOptions {
   method?: HateoasMethod // defaults to 'GET'
   accepts?: string       // request media type; omit for application/json
-  when?: boolean         // defaults to true; false omits the rel entirely
+  when?: boolean | (() => boolean | Promise<boolean>) // defaults to true
 }
 ```
 
-`when` is where authorization lives. When `false`, the action is **not emitted**, so the client's `can(resource, rel)` returns `false`. Presence of the link *is* the permission. Calling `.action` twice with the same `rel` overrides the earlier one.
+`when` is where authorization lives. A falsy result means the action is **not emitted**, so the client's `can(resource, rel)` returns `false`. Presence of the link *is* the permission. Calling `.action` twice with the same `rel` overrides the earlier one.
+
+`when` accepts three shapes:
+
+- a `boolean` — a precomputed decision;
+- a sync function `() => boolean` — evaluated lazily at build time;
+- an async function `() => Promise<boolean>` — e.g. a DB lookup, so callers don't have to precompute everything up front.
+
+Booleans and sync functions work with `.build()`. Async functions require [`.buildAsync()`](#buildasync); `.build()` throws a clear error if it encounters a predicate that returns a `Promise`.
+
+```ts
+resource(order)
+  .action('refund', '/orders/8f3a2c/refund', {
+    method: 'POST',
+    when: async () => await payments.isRefundable(order.id),
+  })
+```
 
 ### `.build()`
 
@@ -69,7 +86,7 @@ interface ActionOptions {
 build(): HateoasResource<T>
 ```
 
-Returns the enriched wire resource. `_actions` is always present (possibly empty); `_self` appears only if `.self()` was called.
+Returns the enriched wire resource **synchronously**. `_actions` is always present (possibly empty); `_self` appears only if `.self()` was called. Evaluates each `when` that is a `boolean` or a sync function; throws if a `when` function returns a `Promise` — use `.buildAsync()` instead.
 
 ```ts
 resource({ id: '8f3a2c', status: 'pending' })
@@ -77,6 +94,23 @@ resource({ id: '8f3a2c', status: 'pending' })
   .action('cancel', '/orders/8f3a2c/cancel', { method: 'POST', when: false })
   .build()
 // → { id: '8f3a2c', status: 'pending', _self: { href: '/orders/8f3a2c', method: 'GET' }, _actions: {} }
+```
+
+### `.buildAsync()`
+
+```ts
+buildAsync(): Promise<HateoasResource<T>>
+```
+
+Same as `.build()`, but awaits any async `when` predicates before resolving the envelope. Boolean and sync-function predicates work here too, so reach for `.buildAsync()` whenever any action's `when` may resolve asynchronously.
+
+```ts
+const body = await resource(order)
+  .action('refund', '/orders/8f3a2c/refund', {
+    method: 'POST',
+    when: async () => await payments.isRefundable(order.id),
+  })
+  .buildAsync()
 ```
 
 See [server side](/guide/server-side) for the rules that make it worth it.
