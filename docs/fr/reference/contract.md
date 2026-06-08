@@ -9,7 +9,7 @@ npm install @affordant/contract
 Vous l'importez rarement directement : les paquets client et serveur réexportent ces mêmes types. Recourez-y quand vous écrivez du code qui se situe entre les deux côtés (un paquet de modèle partagé, un utilitaire de test).
 
 ```ts
-import type { HateoasAction, HateoasMethod, HateoasResource } from '@affordant/contract'
+import type { ActionField, HateoasAction, HateoasMethod, HateoasResource } from '@affordant/contract'
 ```
 
 ## `HateoasMethod`
@@ -27,10 +27,26 @@ interface HateoasAction {
   href: string
   method: HateoasMethod
   accepts?: string
+  title?: string
+  fields?: ActionField[]
 }
 ```
 
-Un descripteur d'action hypermédia : où (`href`), comment (`method`) et, optionnellement, quel corps de requête il accepte (`accepts`, un type de média — vaut `application/json` par défaut quand omis).
+Un descripteur d'action hypermédia : où (`href`), comment (`method`) et, optionnellement, quel corps de requête il accepte (`accepts`, un type de média — vaut `application/json` par défaut quand omis). Il peut aussi porter un `title` lisible (le texte du bouton/lien) et les champs d'entrée `fields` que le client doit afficher, afin que l'interface n'ait besoin d'aucune correspondance par rel.
+
+## `ActionField`
+
+```ts
+interface ActionField {
+  name: string
+  type?: string
+  required?: boolean
+  label?: string
+  value?: unknown
+}
+```
+
+Une entrée qu'une action attend, pour que le client puisse afficher un champ de formulaire directement depuis le fil. `name` est la clé dans le corps soumis ; `type` est le genre d'entrée (`'text'`, `'number'`, `'boolean'`, … — vaut conceptuellement `'text'` par défaut) ; `required` marque une valeur obligatoire ; `label` est l'étiquette lisible ; `value` est une valeur par défaut ou pré-remplie.
 
 ## `HateoasResource<T>`
 

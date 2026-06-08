@@ -1,4 +1,4 @@
-import type { HateoasAction, HateoasMethod, HateoasResource } from '@affordant/contract'
+import type { ActionField, HateoasAction, HateoasMethod, HateoasResource } from '@affordant/contract'
 
 /** Options for a single affordance offered on a resource. */
 export interface ActionOptions {
@@ -6,6 +6,10 @@ export interface ActionOptions {
   method?: HateoasMethod
   /** Media type the action's body accepts. Omit for `application/json`. */
   accepts?: string
+  /** Human-readable label for the action (button/link text). */
+  title?: string
+  /** Inputs the action expects, for the client to render as a form. */
+  fields?: ActionField[]
   /**
    * Whether to actually offer this action. `false` omits the rel entirely,
    * so the client's `can(resource, rel)` returns `false`. This is where
@@ -66,6 +70,8 @@ export function resource<T extends object>(data: T): ResourceBuilder<T> {
       if (opts?.when === false) return builder
       const action: HateoasAction = { href, method: opts?.method ?? 'GET' }
       if (opts?.accepts !== undefined) action.accepts = opts.accepts
+      if (opts?.title !== undefined) action.title = opts.title
+      if (opts?.fields !== undefined) action.fields = opts.fields
       actions[rel] = action
       return builder
     },
