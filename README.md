@@ -32,6 +32,7 @@ This repo is an npm-workspaces monorepo. One shared contract, symmetric on each 
 | [`@affordant/react`](packages/react) | client | React adapter: gate UI on affordances and follow them with hooks. |
 | [`@affordant/server`](packages/server) | server | A builder that emits the `_self` / `_actions` envelope. Framework-agnostic. |
 | [`@affordant/express`](packages/express) | server | Express adapter: send the envelope and build URLs from the request. |
+| [`@affordant/hono`](packages/hono) | server | Hono adapter: send the envelope and build URLs from the request. |
 
 ```
                  ┌─ @affordant/contract (shared wire types) ─┐

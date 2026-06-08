@@ -70,6 +70,27 @@ function CancelButton({ order }) {
 }
 ```
 
+## Server adapters (optional)
+
+On the server, [`@affordant/express`](https://github.com/Leroy-Florian/Affordant/tree/main/packages/express) and [`@affordant/hono`](https://github.com/Leroy-Florian/Affordant/tree/main/packages/hono) send the built envelope and emit the matching `Link` headers — but they're thin conveniences over `@affordant/server`, not requirements.
+
+```ts
+import { resource } from '@affordant/server'
+import { sendResource, urlFor } from '@affordant/hono'
+
+app.get('/orders/:id', (c) => {
+  const order = getOrder(c.req.param('id'))
+  return sendResource(
+    c,
+    resource(order)
+      .self(urlFor(c, `/orders/${order.id}`))
+      .action('cancel', urlFor(c, `/orders/${order.id}/cancel`), { method: 'POST', when: order.status === 'pending' }),
+  )
+})
+```
+
+`sendResource` returns the JSON `Response` and sets a combined RFC 8288 `Link` header (`self` first, then every action rel); `urlFor` builds an absolute URL from the request's origin.
+
 ## Using Effect
 
 `follow` is a plain promise-returning function, so it drops into Effect (or any effect system) with a one-line wrap — `Effect.tryPromise(() => follow(action, init))`. That interop is yours to add if you want it; Affordant never ships an Effect dependency.
