@@ -1,5 +1,11 @@
 import { useCallback, useMemo, useState } from 'react'
-import { actionFor, can, follow as vanillaFollow, type FollowInit } from 'affordant'
+import {
+  actionFor,
+  can,
+  follow as vanillaFollow,
+  followJson as vanillaFollowJson,
+  type FollowInit,
+} from 'affordant'
 import type { HateoasAction, HateoasResource } from '@affordant/contract'
 
 export type { HateoasAction, HateoasMethod, HateoasResource } from '@affordant/contract'
@@ -55,6 +61,34 @@ export function useFollow(): UseFollowResult {
       const response = await vanillaFollow(action, init)
       setState({ running: false, error: null })
       return response
+    } catch (error) {
+      setState({ running: false, error })
+      throw error
+    }
+  }, [])
+
+  return { ...state, run }
+}
+
+export interface UseFollowJsonResult<T> extends FollowState {
+  readonly run: (action: HateoasAction, init?: FollowInit) => Promise<T>
+}
+
+/**
+ * Typed sibling of {@link useFollow}: tracks `running` / `error` around the
+ * client's `followJson`. `run` resolves with the parsed body typed as `T` and
+ * re-throws on failure (with `error` set) — a `FollowError` for non-2xx
+ * responses, or whatever `fetch` rejected with.
+ */
+export function useFollowJson<T = unknown>(): UseFollowJsonResult<T> {
+  const [state, setState] = useState<FollowState>({ running: false, error: null })
+
+  const run = useCallback(async (action: HateoasAction, init?: FollowInit) => {
+    setState({ running: true, error: null })
+    try {
+      const result = await vanillaFollowJson<T>(action, init)
+      setState({ running: false, error: null })
+      return result
     } catch (error) {
       setState({ running: false, error })
       throw error
