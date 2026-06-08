@@ -30,6 +30,7 @@ This repo is an npm-workspaces monorepo. One shared contract, symmetric on each 
 | [`@affordant/contract`](packages/contract) | shared | The wire-contract types. Zero runtime, zero deps. Everything else depends on it. |
 | [`affordant`](packages/client) | client | `can` / `actionFor` / `follow` — gate UI on what the server offers. Zero runtime deps. |
 | [`@affordant/react`](packages/react) | client | React adapter: gate UI on affordances and follow them with hooks. |
+| [`@affordant/vue`](packages/vue) | client | Vue adapter: gate UI on affordances and follow them with composables. |
 | [`@affordant/server`](packages/server) | server | A builder that emits the `_self` / `_actions` envelope. Framework-agnostic. |
 | [`@affordant/express`](packages/express) | server | Express adapter: send the envelope and build URLs from the request. |
 

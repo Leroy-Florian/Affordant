@@ -16,12 +16,13 @@
     "packages/contract",
     "packages/client",
     "packages/react",
+    "packages/vue",
     "packages/server",
     "packages/express",
     "demo"
   ],
   "scripts": {
-    "build": "npm run build -w @affordant/contract && npm run build -w affordant && npm run build -w @affordant/react && npm run build -w @affordant/server && npm run build -w @affordant/express",
+    "build": "npm run build -w @affordant/contract && npm run build -w affordant && npm run build -w @affordant/react && npm run build -w @affordant/server && npm run build -w @affordant/express && npm run build -w @affordant/vue",
     "typecheck": "npm run build && npm run typecheck --workspaces --if-present",
     "pretest": "npm run build",
     "test": "vitest run",
@@ -45,6 +46,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "typescript": "^6.0.3",
+    "vue": "^3.4.0",
     "vitepress": "^1.6.4",
     "vitest": "^4.1.8"
   }

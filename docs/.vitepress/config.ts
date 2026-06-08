@@ -82,6 +82,7 @@ export default defineConfig({
               items: [
                 { text: 'affordant', link: '/reference/api' },
                 { text: '@affordant/react', link: '/reference/react' },
+                { text: '@affordant/vue', link: '/reference/vue' },
               ],
             },
             {
@@ -126,6 +127,7 @@ export default defineConfig({
               items: [
                 { text: 'affordant', link: '/fr/reference/api' },
                 { text: '@affordant/react', link: '/fr/reference/react' },
+                { text: '@affordant/vue', link: '/fr/reference/vue' },
               ],
             },
             {
