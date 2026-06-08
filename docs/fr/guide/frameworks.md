@@ -70,6 +70,27 @@ function CancelButton({ order }) {
 }
 ```
 
+## Fastify (serveur)
+
+Côté serveur, [`@affordant/fastify`](/fr/reference/server) envoie l'enveloppe depuis un handler et construit les URL absolues à partir de la requête. `sendResource` émet aussi chaque rel sous forme d'en-tête `Link` (RFC 8288).
+
+```ts
+import { resource } from '@affordant/server'
+import { sendResource, urlFor } from '@affordant/fastify'
+
+app.get('/orders/:id', (req, reply) =>
+  sendResource(
+    reply,
+    resource(order)
+      .self(urlFor(req, `/orders/${order.id}`))
+      .action('cancel', urlFor(req, `/orders/${order.id}/cancel`), {
+        method: 'POST',
+        when: order.ownerId === req.user.id,
+      }),
+  ),
+)
+```
+
 ## Utiliser Effect
 
 `follow` est une simple fonction qui renvoie une promesse, donc elle s'intègre à Effect (ou tout autre système d'effets) avec un emballage d'une ligne — `Effect.tryPromise(() => follow(action, init))`. Cette interopérabilité, c'est à vous de l'ajouter si vous le voulez ; Affordant n'embarque jamais de dépendance Effect.

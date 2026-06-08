@@ -32,6 +32,7 @@ Ce dépôt est un monorepo npm-workspaces. Un seul contrat partagé, symétrique
 | [`@affordant/react`](packages/react) | client | Adaptateur React : conditionne l'UI aux affordances et les suit avec des hooks. |
 | [`@affordant/server`](packages/server) | serveur | Un constructeur qui émet l'enveloppe `_self` / `_actions`. Indépendant du framework. |
 | [`@affordant/express`](packages/express) | serveur | Adaptateur Express : envoie l'enveloppe et construit les URL à partir de la requête. |
+| [`@affordant/fastify`](packages/fastify) | serveur | Adaptateur Fastify : envoie l'enveloppe et construit les URL à partir de la requête. |
 
 ```
                  ┌─ @affordant/contract (types de fil partagés) ─┐

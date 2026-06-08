@@ -70,6 +70,27 @@ function CancelButton({ order }) {
 }
 ```
 
+## Fastify (server)
+
+On the server, [`@affordant/fastify`](/reference/server) sends the envelope from a handler and builds absolute URLs from the request. `sendResource` also emits every rel as an RFC 8288 `Link` header.
+
+```ts
+import { resource } from '@affordant/server'
+import { sendResource, urlFor } from '@affordant/fastify'
+
+app.get('/orders/:id', (req, reply) =>
+  sendResource(
+    reply,
+    resource(order)
+      .self(urlFor(req, `/orders/${order.id}`))
+      .action('cancel', urlFor(req, `/orders/${order.id}/cancel`), {
+        method: 'POST',
+        when: order.ownerId === req.user.id,
+      }),
+  ),
+)
+```
+
 ## Using Effect
 
 `follow` is a plain promise-returning function, so it drops into Effect (or any effect system) with a one-line wrap — `Effect.tryPromise(() => follow(action, init))`. That interop is yours to add if you want it; Affordant never ships an Effect dependency.
