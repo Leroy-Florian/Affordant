@@ -72,3 +72,24 @@ describe('actionFor', () => {
     expect(actionFor(resource, 'cancel')).toBeNull()
   })
 })
+
+describe('collection envelope', () => {
+  const orders = {
+    items: [],
+    _self: { href: '/orders', method: 'GET' as const },
+    _actions: {
+      next: { href: '/orders?page=2', method: 'GET' as const },
+    },
+    page: { total: 42, size: 20, number: 1 },
+  }
+
+  it('can() reads a collection pagination rel', () => {
+    expect(can(orders, 'next')).toBe(true)
+    expect(can(orders, 'prev')).toBe(false)
+  })
+
+  it('actionFor() returns the collection pagination action', () => {
+    expect(actionFor(orders, 'next')).toEqual({ href: '/orders?page=2', method: 'GET' })
+    expect(actionFor(orders, 'prev')).toBeNull()
+  })
+})

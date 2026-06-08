@@ -55,10 +55,10 @@ Votre ressource `T`, enrichie de contrôles hypermédia. `_actions` associe une 
 ### `can`
 
 ```ts
-function can<T>(resource: HateoasResource<T> | null | undefined, rel: string): boolean
+function can(resource: { _actions?: Record<string, HateoasAction> } | null | undefined, rel: string): boolean
 ```
 
-Prédicat d'affordance : le serveur propose-t-il actuellement `rel` sur cette ressource ? Pilote l'UI conditionnelle sans dupliquer les règles d'autorisation côté client.
+Prédicat d'affordance : le serveur propose-t-il actuellement `rel` sur cette ressource ? Pilote l'UI conditionnelle sans dupliquer les règles d'autorisation côté client. Accepte tout objet portant une carte `_actions`, de sorte qu'il lit aussi les rels de pagination d'une collection (`next`, `prev`, `first`, `last`).
 
 - Renvoie `false` pour les ressources `null` / `undefined` et pour les ressources sans `_actions`.
 - Seules les propriétés propres de `_actions` comptent — les propriétés héritées sont ignorées.
@@ -70,13 +70,13 @@ can(order, 'cancel') // → true | false
 ### `actionFor`
 
 ```ts
-function actionFor<T>(
-  resource: HateoasResource<T> | null | undefined,
+function actionFor(
+  resource: { _actions?: Record<string, HateoasAction> } | null | undefined,
   rel: string,
 ): HateoasAction | null
 ```
 
-Renvoie le descripteur d'action pour `rel`, ou `null` quand le serveur ne l'a pas proposé. Même sûreté vis-à-vis de `null` que `can`.
+Renvoie le descripteur d'action pour `rel`, ou `null` quand le serveur ne l'a pas proposé. Même sûreté vis-à-vis de `null` que `can`, et lit de même les rels de pagination d'une collection.
 
 ```ts
 const action = actionFor(order, 'cancel')

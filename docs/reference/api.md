@@ -55,10 +55,10 @@ Your resource `T`, enriched with hypermedia controls. `_actions` maps a link rel
 ### `can`
 
 ```ts
-function can<T>(resource: HateoasResource<T> | null | undefined, rel: string): boolean
+function can(resource: { _actions?: Record<string, HateoasAction> } | null | undefined, rel: string): boolean
 ```
 
-Affordance predicate: is the server currently offering `rel` on this resource? Drives conditional UI without duplicating authorization rules client-side.
+Affordance predicate: is the server currently offering `rel` on this resource? Drives conditional UI without duplicating authorization rules client-side. Accepts anything carrying an `_actions` map, so it also reads a collection's pagination rels (`next`, `prev`, `first`, `last`).
 
 - Returns `false` for `null` / `undefined` resources and for resources without `_actions`.
 - Only own properties of `_actions` count — inherited properties are ignored.
@@ -70,13 +70,13 @@ can(order, 'cancel') // → true | false
 ### `actionFor`
 
 ```ts
-function actionFor<T>(
-  resource: HateoasResource<T> | null | undefined,
+function actionFor(
+  resource: { _actions?: Record<string, HateoasAction> } | null | undefined,
   rel: string,
 ): HateoasAction | null
 ```
 
-Returns the action descriptor for `rel`, or `null` when the server did not offer it. Same null-safety as `can`.
+Returns the action descriptor for `rel`, or `null` when the server did not offer it. Same null-safety as `can`, and likewise reads a collection's pagination rels.
 
 ```ts
 const action = actionFor(order, 'cancel')
