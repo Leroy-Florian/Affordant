@@ -55,7 +55,38 @@ describe('sendResource', () => {
     expect(res.headers.Link).toBe('</orders/8f3a2c>; rel="self"')
   })
 
-  it('omits the Link header when there is no _self', () => {
+  it('emits every action rel in the combined Link header, self first', () => {
+    const res = fakeRes()
+
+    sendResource(
+      res,
+      resource({ id: '8f3a2c' })
+        .self('/orders/8f3a2c')
+        .action('cancel', '/orders/8f3a2c/cancel', { method: 'POST' })
+        .action('track', '/orders/8f3a2c/track'),
+    )
+
+    expect(res.headers.Link).toBe(
+      '</orders/8f3a2c>; rel="self", </orders/8f3a2c/cancel>; rel="cancel", </orders/8f3a2c/track>; rel="track"',
+    )
+  })
+
+  it('emits action rels even when there is no _self', () => {
+    const res = fakeRes()
+
+    sendResource(
+      res,
+      resource({ id: '8f3a2c' })
+        .action('cancel', '/orders/8f3a2c/cancel')
+        .action('track', '/orders/8f3a2c/track'),
+    )
+
+    expect(res.headers.Link).toBe(
+      '</orders/8f3a2c/cancel>; rel="cancel", </orders/8f3a2c/track>; rel="track"',
+    )
+  })
+
+  it('omits the Link header when there is no _self and no actions', () => {
     const res = fakeRes()
 
     sendResource(res, resource({ id: '8f3a2c' }))

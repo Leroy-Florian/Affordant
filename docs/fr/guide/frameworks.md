@@ -42,6 +42,14 @@ if (can(order, 'cancel')) {
 {/if}
 ```
 
+## Express, côté serveur
+
+Le `sendResource` de [`@affordant/express`](https://www.npmjs.com/package/@affordant/express) sérialise l'enveloppe en JSON sans la modifier, et reflète aussi chaque lien dans un en-tête `Link` combiné conforme à la [RFC 8288](https://www.rfc-editor.org/rfc/rfc8288) — `_self` en `rel="self"` d'abord, puis chaque rel de `_actions` dans l'ordre. Les clients et proxys qui lisent les en-têtes `Link` voient les mêmes affordances que le corps.
+
+```
+Link: </orders/8f3a2c>; rel="self", </orders/8f3a2c/cancel>; rel="cancel"
+```
+
 ## Vous n'avez *jamais besoin* d'un adaptateur
 
 `can` et `actionFor` sont des lectures pures, synchrones et sûres vis-à-vis de `null` sur la ressource que vous détenez déjà. Il n'y a rien à brancher dans le cycle de vie d'un composant — vous les appelez en ligne là où vous affichez. `follow` est un unique appel `fetch` qui renvoie une `Response`, donc il se compose avec n'importe quelle couche de données que vous utilisez déjà (TanStack Query, SWR, un simple `await`, un store Svelte…). Les exemples vanilla ci-dessus sont une façon complète et prise en charge d'utiliser Affordant dans n'importe quel framework.
