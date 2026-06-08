@@ -70,6 +70,27 @@ function CancelButton({ order }) {
 }
 ```
 
+## Adaptateurs serveur (optionnels)
+
+Côté serveur, [`@affordant/express`](https://github.com/Leroy-Florian/Affordant/tree/main/packages/express) et [`@affordant/hono`](https://github.com/Leroy-Florian/Affordant/tree/main/packages/hono) envoient l'enveloppe construite et émettent les en-têtes `Link` correspondants — mais ce sont de fines commodités au-dessus de `@affordant/server`, pas des prérequis.
+
+```ts
+import { resource } from '@affordant/server'
+import { sendResource, urlFor } from '@affordant/hono'
+
+app.get('/orders/:id', (c) => {
+  const order = getOrder(c.req.param('id'))
+  return sendResource(
+    c,
+    resource(order)
+      .self(urlFor(c, `/orders/${order.id}`))
+      .action('cancel', urlFor(c, `/orders/${order.id}/cancel`), { method: 'POST', when: order.status === 'pending' }),
+  )
+})
+```
+
+`sendResource` renvoie la `Response` JSON et pose un en-tête `Link` RFC 8288 combiné (`self` en premier, puis chaque rel d'action) ; `urlFor` construit une URL absolue à partir de l'origine de la requête.
+
 ## Utiliser Effect
 
 `follow` est une simple fonction qui renvoie une promesse, donc elle s'intègre à Effect (ou tout autre système d'effets) avec un emballage d'une ligne — `Effect.tryPromise(() => follow(action, init))`. Cette interopérabilité, c'est à vous de l'ajouter si vous le voulez ; Affordant n'embarque jamais de dépendance Effect.

@@ -1,0 +1,53 @@
+{
+  "name": "@affordant/hono",
+  "version": "0.2.0",
+  "description": "Hono adapter for Affordant: send the hypermedia envelope from your handlers and build absolute action URLs from the request.",
+  "license": "MIT",
+  "author": "Florian Leroy",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Leroy-Florian/Affordant.git",
+    "directory": "packages/hono"
+  },
+  "homepage": "https://leroy-florian.github.io/Affordant/",
+  "bugs": "https://github.com/Leroy-Florian/Affordant/issues",
+  "keywords": [
+    "hateoas",
+    "hypermedia",
+    "affordance",
+    "hono",
+    "edge"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@affordant/server": "^0.2.0"
+  },
+  "peerDependencies": {
+    "hono": ">=4"
+  },
+  "peerDependenciesMeta": {
+    "hono": {
+      "optional": true
+    }
+  },
+  "scripts": {
+    "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  }
+}
