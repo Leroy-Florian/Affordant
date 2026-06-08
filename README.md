@@ -88,6 +88,14 @@ npm run smoke      # verify the published npm artifacts (see smoke/)
 
 The [`demo/`](demo) package proves the contract across **two backends** (Express and pure-Node) × **two fronts** (vanilla JS and React): the E2E matrix and the Playwright specs assert it over real HTTP and a real browser. [`smoke/`](smoke) does the same against the **published** packages, not the workspace sources. CI runs build + typecheck + tests on every PR ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)); the browser E2E runs in [`e2e.yml`](.github/workflows/e2e.yml).
 
+## Roadmap
+
+Where this is headed: [ROADMAP.md](ROADMAP.md). It's indicative, not committed.
+
+## Contributing
+
+Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## License
 
 MIT

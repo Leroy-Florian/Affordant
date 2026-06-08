@@ -89,6 +89,14 @@ npm run smoke      # vérifie les artefacts npm publiés (voir smoke/)
 
 Le paquet [`demo/`](demo) prouve le contrat sur **deux backends** (Express et pur Node) × **deux fronts** (JS vanilla et React) : la matrice E2E et les specs Playwright le vérifient sur du vrai HTTP et un vrai navigateur. [`smoke/`](smoke) fait de même contre les paquets **publiés**, et non les sources du workspace. La CI exécute build + typecheck + tests sur chaque PR ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) ; l'E2E navigateur tourne dans [`e2e.yml`](.github/workflows/e2e.yml).
 
+## Feuille de route
+
+La direction du projet : [ROADMAP.fr.md](ROADMAP.fr.md). Indicative, non engageante.
+
+## Contribuer
+
+Les contributions sont les bienvenues — voir [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Licence
 
 MIT
