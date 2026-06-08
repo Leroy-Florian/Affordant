@@ -36,6 +36,7 @@ interface ResourceBuilder<T> {
   self(href: string, opts?: SelfOptions): ResourceBuilder<T>
   action(rel: string, href: string, opts?: ActionOptions): ResourceBuilder<T>
   build(): HateoasResource<T>
+  buildAsync(): Promise<HateoasResource<T>>
 }
 ```
 
@@ -57,11 +58,27 @@ Propose `rel` à `href`.
 interface ActionOptions {
   method?: HateoasMethod // vaut 'GET' par défaut
   accepts?: string       // type de média de la requête ; omettre pour application/json
-  when?: boolean         // vaut true par défaut ; false omet entièrement le rel
+  when?: boolean | (() => boolean | Promise<boolean>) // vaut true par défaut
 }
 ```
 
-`when` est là où vit l'autorisation. Quand il vaut `false`, l'action **n'est pas émise**, donc le `can(resource, rel)` du client renvoie `false`. La présence du lien *est* la permission. Appeler `.action` deux fois avec le même `rel` écrase le précédent.
+`when` est là où vit l'autorisation. Un résultat falsy signifie que l'action **n'est pas émise**, donc le `can(resource, rel)` du client renvoie `false`. La présence du lien *est* la permission. Appeler `.action` deux fois avec le même `rel` écrase le précédent.
+
+`when` accepte trois formes :
+
+- un `boolean` — une décision précalculée ;
+- une fonction synchrone `() => boolean` — évaluée paresseusement au moment du `build` ;
+- une fonction asynchrone `() => Promise<boolean>` — par exemple une requête en base, afin de ne pas avoir à tout précalculer à l'avance.
+
+Les booléens et les fonctions synchrones fonctionnent avec `.build()`. Les fonctions asynchrones nécessitent [`.buildAsync()`](#buildasync) ; `.build()` lève une erreur claire s'il rencontre un prédicat qui renvoie une `Promise`.
+
+```ts
+resource(order)
+  .action('refund', '/orders/8f3a2c/refund', {
+    method: 'POST',
+    when: async () => await payments.isRefundable(order.id),
+  })
+```
 
 ### `.build()`
 
@@ -69,7 +86,7 @@ interface ActionOptions {
 build(): HateoasResource<T>
 ```
 
-Renvoie la ressource de fil enrichie. `_actions` est toujours présent (éventuellement vide) ; `_self` n'apparaît que si `.self()` a été appelé.
+Renvoie la ressource de fil enrichie **de manière synchrone**. `_actions` est toujours présent (éventuellement vide) ; `_self` n'apparaît que si `.self()` a été appelé. Évalue chaque `when` qui est un `boolean` ou une fonction synchrone ; lève une erreur si une fonction `when` renvoie une `Promise` — utilisez `.buildAsync()` à la place.
 
 ```ts
 resource({ id: '8f3a2c', status: 'pending' })
@@ -77,6 +94,23 @@ resource({ id: '8f3a2c', status: 'pending' })
   .action('cancel', '/orders/8f3a2c/cancel', { method: 'POST', when: false })
   .build()
 // → { id: '8f3a2c', status: 'pending', _self: { href: '/orders/8f3a2c', method: 'GET' }, _actions: {} }
+```
+
+### `.buildAsync()`
+
+```ts
+buildAsync(): Promise<HateoasResource<T>>
+```
+
+Comme `.build()`, mais attend la résolution des prédicats `when` asynchrones avant de produire l'enveloppe. Les prédicats booléens et synchrones fonctionnent ici aussi ; privilégiez donc `.buildAsync()` dès qu'un `when` d'action peut se résoudre de façon asynchrone.
+
+```ts
+const body = await resource(order)
+  .action('refund', '/orders/8f3a2c/refund', {
+    method: 'POST',
+    when: async () => await payments.isRefundable(order.id),
+  })
+  .buildAsync()
 ```
 
 Voir [côté serveur](/fr/guide/server-side) pour les règles qui en font une démarche qui en vaut la peine.

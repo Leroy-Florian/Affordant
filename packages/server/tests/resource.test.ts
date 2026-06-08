@@ -64,6 +64,57 @@ describe('resource builder', () => {
     expect('cancel' in body._actions).toBe(false)
   })
 
+  it('emits the action when `when` is a sync function returning true', () => {
+    const body = resource(order)
+      .action('cancel', '/orders/8f3a2c/cancel', { method: 'POST', when: () => true })
+      .build()
+    expect(body._actions.cancel).toBeDefined()
+  })
+
+  it('omits the action when `when` is a sync function returning false', () => {
+    const body = resource(order)
+      .action('cancel', '/orders/8f3a2c/cancel', { method: 'POST', when: () => false })
+      .build()
+    expect('cancel' in body._actions).toBe(false)
+  })
+
+  it('emits the action when an async `when` resolves true via buildAsync', async () => {
+    const body = await resource(order)
+      .action('cancel', '/orders/8f3a2c/cancel', {
+        method: 'POST',
+        when: async () => true,
+      })
+      .buildAsync()
+    expect(body._actions.cancel).toBeDefined()
+  })
+
+  it('omits the action when an async `when` resolves false via buildAsync', async () => {
+    const body = await resource(order)
+      .action('cancel', '/orders/8f3a2c/cancel', {
+        method: 'POST',
+        when: async () => false,
+      })
+      .buildAsync()
+    expect('cancel' in body._actions).toBe(false)
+  })
+
+  it('buildAsync still handles boolean and sync-function predicates', async () => {
+    const body = await resource(order)
+      .action('track', '/orders/8f3a2c/tracking', { when: true })
+      .action('cancel', '/orders/8f3a2c/cancel', { when: () => true })
+      .action('refund', '/orders/8f3a2c/refund', { when: false })
+      .buildAsync()
+    expect(Object.keys(body._actions)).toEqual(['track', 'cancel'])
+  })
+
+  it('build() throws a helpful error when a `when` function returns a Promise', () => {
+    const builder = resource(order).action('cancel', '/orders/8f3a2c/cancel', {
+      method: 'POST',
+      when: async () => true,
+    })
+    expect(() => builder.build()).toThrowError(/buildAsync/)
+  })
+
   it('chains self and multiple actions, gating each independently', () => {
     const isOwner = true
     const isShipped = false
