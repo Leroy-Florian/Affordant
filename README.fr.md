@@ -2,7 +2,7 @@
 
 [English](README.md) · **Français**
 
-**Hypermédia orienté affordances (HATEOAS), des deux côtés du fil.** Arrêtez de réimplémenter vos règles d'autorisation dans le frontend — laissez les actions proposées par le serveur piloter votre UI, et laissez le serveur déclarer ces actions une seule fois.
+**Atteignez enfin le niveau 3 de REST — l'hypermédia (HATEOAS), des deux côtés du fil.** Le niveau 3 est le niveau de maturité REST que la plupart des équipes délaissent. Arrêtez de réimplémenter vos règles d'autorisation dans le frontend — laissez les actions proposées par le serveur piloter votre UI, et laissez le serveur déclarer ces actions une seule fois.
 
 Le serveur enrichit chaque réponse avec `_self` et `_actions` ; la **présence d'un rel encode la permission**. Le client affiche un bouton à partir de la *présence* du lien — il ne redérive jamais « cet utilisateur peut-il faire X ? ».
 

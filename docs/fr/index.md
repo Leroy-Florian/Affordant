@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: Affordant
-  text: L'hypermédia orienté affordances, des deux côtés du fil
-  tagline: Arrêtez de réimplémenter votre autorisation dans le frontend. Le serveur déclare les actions qu'il propose ; votre UI s'affiche à partir d'elles.
+  text: Atteignez le niveau 3 de REST, des deux côtés du fil
+  tagline: L'hypermédia (HATEOAS) est le niveau de maturité REST que la plupart des équipes n'atteignent jamais. Affordant vous y amène — le serveur déclare les actions qu'il propose ; votre UI s'affiche à partir d'elles, sans réimplémenter l'autorisation dans le frontend.
   actions:
     - theme: brand
       text: Démarrer
