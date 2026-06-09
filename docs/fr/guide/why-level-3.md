@@ -82,6 +82,26 @@ C'est un levier concret :
 - **Le contrat ne peut pas mentir.** Les actions vues par un appelant sont calculées depuis l'état réel ; la « documentation » est donc toujours synchronisée avec ce que le serveur acceptera vraiment.
 - **Les clients peuvent rester génériques.** Outils, panneaux d'administration et tests peuvent piloter l'API uniquement en suivant les rels, sans coder en dur la table de routage.
 
+## Le parcours utilisateur vit — et se teste — côté serveur
+
+Comme chaque transition est décidée côté serveur, la **séquence** des transitions légales — le parcours utilisateur — y vit aussi. « Une commande `pending` peut être annulée ou remboursée ; une fois `shipped`, il ne reste que `track` » est un fait du backend, pas une propriété émergente du code frontend.
+
+Le parcours devient ainsi **testable à sa source**. On peut vérifier, contre l'état réel, que les bonnes affordances apparaissent et disparaissent à mesure que l'agrégat traverse son cycle de vie :
+
+```ts
+// le propriétaire d'une commande pending se voit proposer cancel + refund
+const pending = await GET('/orders/8f3a2c', { as: owner })
+expect(can(pending, 'cancel')).toBe(true)
+expect(can(pending, 'refund')).toBe(true)
+
+// une fois expédiée, la transition cancel a disparu — pour tout le monde
+const shipped = await ship(order)
+expect(can(shipped, 'cancel')).toBe(false)
+expect(can(shipped, 'track')).toBe(true)
+```
+
+Une suite de tests qui passe ainsi est une garantie sur le parcours lui-même : chaque état propose exactement les transitions qu'il doit, exactement aux appelants qui doivent les avoir. Le frontend peut faire confiance à ce contrat au lieu de retester les mêmes règles à travers l'UI — la navigation est vérifiée une seule fois, là où vivent les règles.
+
 ## Où Affordant intervient
 
 Affordant est la mécanique du niveau 3 des deux côtés du fil, sur [un seul contrat partagé](/fr/guide/wire-contract) :

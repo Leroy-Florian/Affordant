@@ -82,6 +82,26 @@ That's concrete leverage:
 - **The contract can't lie.** The actions a caller sees are computed from real state, so the "documentation" is always in sync with what the server will actually accept.
 - **Clients can stay generic.** Tooling, admin panels, and tests can drive the API purely by following rels, without hardcoding the route table.
 
+## The user journey lives — and is tested — on the server
+
+Because each transition is decided server-side, the **sequence** of legal transitions — the user journey — lives there too. "A `pending` order can be cancelled or refunded; once `shipped`, only `track` remains" is a backend fact, not an emergent property of frontend code.
+
+That makes the journey **testable at its source**. You can assert, against real state, that the right affordances appear and disappear as the aggregate moves through its lifecycle:
+
+```ts
+// the owner of a pending order is offered cancel + refund
+const pending = await GET('/orders/8f3a2c', { as: owner })
+expect(can(pending, 'cancel')).toBe(true)
+expect(can(pending, 'refund')).toBe(true)
+
+// once shipped, the cancel transition is gone — for everyone
+const shipped = await ship(order)
+expect(can(shipped, 'cancel')).toBe(false)
+expect(can(shipped, 'track')).toBe(true)
+```
+
+A suite like this is a guarantee about the journey itself: every state offers exactly the transitions it should, to exactly the callers who should have them. The frontend can trust that contract instead of re-testing the same rules through the UI — the navigation is verified once, where the rules live.
+
 ## Where Affordant fits
 
 Affordant is the machinery for level 3 on both sides of the wire, over [one shared contract](/guide/wire-contract):
