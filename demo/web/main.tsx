@@ -12,6 +12,17 @@ import { getLang, setLang, T, type Lang } from './i18n.js'
 hljs.registerLanguage('javascript', javascript)
 const highlight = (code: string) => hljs.highlight(code, { language: 'javascript' }).value
 
+// How this front consumes the contract — shown in the "Front" pane.
+const FRONT_CODE = `// React — @affordant/react
+const cancel = useAffordance(order, 'cancel')
+const { run, running } = useFollow()
+
+return cancel.can ? (
+  <button disabled={running} onClick={() => run(cancel.action!, { token })}>
+    Cancel
+  </button>
+) : null`
+
 function LangSwitch({ lang, onChange }: { lang: Lang; onChange: (l: Lang) => void }) {
   return (
     <div className="lang">
@@ -77,6 +88,15 @@ function App() {
 
         <div className="panes">
           <div className="pane">
+            <h3>{t.front} · React</h3>
+            <pre className="code">
+              <code
+                className="hljs language-javascript"
+                dangerouslySetInnerHTML={{ __html: highlight(FRONT_CODE) }}
+              />
+            </pre>
+          </div>
+          <div className="pane">
             <h3>{t.controller} · {backend.label}</h3>
             <pre className="code">
               <code
@@ -85,12 +105,12 @@ function App() {
               />
             </pre>
           </div>
-          <div className="pane">
-            <h3>{t.response}</h3>
-            <pre className="json" data-testid="response">
-              {response ? JSON.stringify(response, null, 2) : '…'}
-            </pre>
-          </div>
+        </div>
+        <div className="pane response-block">
+          <h3>{t.response}</h3>
+          <pre className="json" data-testid="response">
+            {response ? JSON.stringify(response, null, 2) : '…'}
+          </pre>
         </div>
       </div>
 

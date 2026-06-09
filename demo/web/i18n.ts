@@ -28,6 +28,7 @@ export interface Dict {
   api: string
   owner: string
   controller: string
+  front: string
   response: string
   cancel: string
   order: string
@@ -57,6 +58,7 @@ export const T: Record<Lang, Dict> = {
     api: 'API',
     owner: 'Authenticated as owner (u1)',
     controller: 'Controller',
+    front: 'Front',
     response: 'Response',
     cancel: 'Cancel',
     order: 'Order',
@@ -84,6 +86,7 @@ export const T: Record<Lang, Dict> = {
     api: 'API',
     owner: 'Authentifié en tant que propriétaire (u1)',
     controller: 'Contrôleur',
+    front: 'Front',
     response: 'Réponse',
     cancel: 'Annuler',
     order: 'Commande',

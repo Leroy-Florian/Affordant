@@ -63,6 +63,7 @@ button.action:disabled { opacity: 0.5; cursor: default; }
 
 .panes { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.6rem; }
 .pane { min-width: 0; }
+.response-block { margin-top: 1rem; }
 .pane h3 { margin: 0 0 0.5rem; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
 pre { margin: 0; border-radius: 11px; overflow: auto; font-size: 12px; line-height: 1.55; font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; white-space: pre; }
 /* Response: keep each line intact (no wrap), scroll horizontally inside the pane. */
