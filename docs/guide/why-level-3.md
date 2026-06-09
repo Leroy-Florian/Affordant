@@ -44,6 +44,12 @@ Level 3 keeps the state machine where it belongs. **An affordance is a domain tr
 
 The client never asks "is this order cancellable?". It asks "did the server offer `cancel`?" — and the answer is authoritative by construction.
 
+Try it. The order below is `pending` and owned by `u1`. Toggle who you are, or cancel it, and watch the `cancel` rel — and the button bound to it — appear and disappear with the server's decision. The whole thing runs in your browser, on the real `@affordant/server` and `@affordant/vue` packages:
+
+<AffordanceDemo />
+
+Flip the toggle off and `cancel` is gone: same order, different caller, so the server omits the transition. The button isn't hidden by client-side logic — it was never offered.
+
 ## What changes for the frontend
 
 This is the factual payoff. Crossing to level 3 changes how a frontend is built and maintained:
