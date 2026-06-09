@@ -44,6 +44,12 @@ Le niveau 3 garde la machine à états là où elle doit être. **Une affordance
 
 Le client ne demande jamais « cette commande est-elle annulable ? ». Il demande « le serveur a-t-il proposé `cancel` ? » — et la réponse fait autorité par construction.
 
+Essayez. La commande ci-dessous est `pending` et appartient à `u1`. Changez d'identité, ou annulez-la, et observez le rel `cancel` — et le bouton qui lui est lié — apparaître et disparaître selon la décision du serveur. Le tout tourne dans votre navigateur, sur les vrais paquets `@affordant/server` et `@affordant/vue` :
+
+<AffordanceDemo />
+
+Décochez et `cancel` disparaît : même commande, autre appelant, donc le serveur omet la transition. Le bouton n'est pas masqué par une logique côté client — il n'a jamais été offert.
+
 ## Ce que cela change pour le frontend
 
 C'est le bénéfice factuel. Franchir le cap du niveau 3 change la façon dont un frontend se construit et se maintient :

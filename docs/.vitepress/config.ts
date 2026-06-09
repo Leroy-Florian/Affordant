@@ -61,6 +61,7 @@ export default defineConfig({
         nav: [
           { text: 'Guide', link: '/guide/getting-started' },
           { text: 'Reference', link: '/reference/api' },
+          { text: 'Playground', link: '/playground' },
           { text: 'npm', link: 'https://www.npmjs.com/package/affordant' },
         ],
         sidebar: {
@@ -107,6 +108,7 @@ export default defineConfig({
         nav: [
           { text: 'Guide', link: '/fr/guide/getting-started' },
           { text: 'Référence', link: '/fr/reference/api' },
+          { text: 'Playground', link: '/fr/playground' },
           { text: 'npm', link: 'https://www.npmjs.com/package/affordant' },
         ],
         sidebar: {

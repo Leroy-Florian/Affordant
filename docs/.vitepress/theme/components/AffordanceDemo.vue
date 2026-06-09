@@ -1,13 +1,22 @@
 <script setup lang="ts">
-// A live affordance demo, embeddable in any markdown page. It uses the real
-// `@affordant/vue` adapter against the in-browser backend — so the docs
+// A focused, single-affordance demo for inline use in the guide. It uses the
+// real `@affordant/vue` adapter against the in-browser backend — so the docs
 // dogfood the package they document, with nothing to deploy.
 import { computed, onMounted, ref, watch } from 'vue'
+import { useData } from 'vitepress'
 import { useAffordance, useFollow, type HateoasResource } from '@affordant/vue'
 import { createDemoBackend, type Order } from '../../demo/order'
 
 const backend = createDemoBackend()
 const base = 'https://orders.demo'
+
+const { lang } = useData()
+const fr = computed(() => lang.value.startsWith('fr'))
+const t = computed(() =>
+  fr.value
+    ? { owner: 'Je suis le propriétaire de la commande', cancel: 'Annuler', none: "Aucun cancel offert pour cet appelant / état.", reset: 'Réinitialiser' }
+    : { owner: "I am the order's owner", cancel: 'Cancel', none: 'No cancel offered for this caller / state.', reset: 'Reset' },
+)
 
 const owner = ref(true)
 const order = ref<HateoasResource<Order> | null>(null)
@@ -36,7 +45,14 @@ async function reset() {
   await load()
 }
 
-// Reload whenever the caller switches, so the affordance re-evaluates.
+// Body without _actions; the cancel rel is rendered separately so it can
+// animate in and out as the server offers or withdraws it.
+const bodyJson = computed(() => {
+  if (!order.value) return ''
+  const { _actions, ...rest } = order.value
+  return JSON.stringify(rest, null, 2).slice(0, -2) + ',\n  "_actions": {'
+})
+
 watch(owner, load)
 onMounted(load)
 </script>
@@ -46,9 +62,9 @@ onMounted(load)
     <div class="aff-controls">
       <label class="aff-toggle">
         <input type="checkbox" v-model="owner" />
-        <span>I am the order's owner</span>
+        <span>{{ t.owner }}</span>
       </label>
-      <button class="aff-reset" type="button" @click="reset">Reset</button>
+      <button class="aff-reset" type="button" @click="reset">{{ t.reset }}</button>
     </div>
 
     <div class="aff-stage">
@@ -64,12 +80,15 @@ onMounted(load)
           :disabled="running"
           @click="onCancel"
         >
-          Cancel
+          {{ t.cancel }}
         </button>
-        <p v-else class="aff-empty">No <code>cancel</code> offered for this caller / state.</p>
+        <p v-else class="aff-empty">{{ t.none }}</p>
       </div>
 
-      <pre class="aff-json"><code>{{ JSON.stringify(order, null, 2) }}</code></pre>
+      <pre class="aff-json"><code>{{ bodyJson }}</code><Transition name="aff-rel"><code v-if="cancel.can.value" class="aff-rel">
+    "cancel": { "href": "…/cancel", "method": "POST" }</code></Transition><code>
+  }
+}</code></pre>
     </div>
   </div>
 </template>
@@ -114,6 +133,7 @@ onMounted(load)
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.85rem;
+  align-items: start;
 }
 @media (max-width: 640px) {
   .aff-stage {
@@ -145,18 +165,9 @@ onMounted(load)
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
-.aff-badge-pending {
-  color: var(--vp-c-warning-1);
-  background: var(--vp-c-warning-soft);
-}
-.aff-badge-cancelled {
-  color: var(--vp-c-danger-1);
-  background: var(--vp-c-danger-soft);
-}
-.aff-badge-shipped {
-  color: var(--vp-c-success-1);
-  background: var(--vp-c-success-soft);
-}
+.aff-badge-pending { color: var(--vp-c-warning-1); background: var(--vp-c-warning-soft); }
+.aff-badge-cancelled { color: var(--vp-c-danger-1); background: var(--vp-c-danger-soft); }
+.aff-badge-shipped { color: var(--vp-c-success-1); background: var(--vp-c-success-soft); }
 .aff-action {
   align-self: flex-start;
   font-size: 0.85rem;
@@ -189,5 +200,20 @@ onMounted(load)
 .aff-json code {
   background: transparent;
   padding: 0;
+  white-space: pre;
+}
+.aff-rel {
+  display: inline-block;
+  border-radius: 5px;
+  background: var(--vp-c-brand-soft);
+}
+.aff-rel-enter-active,
+.aff-rel-leave-active {
+  transition: all 0.25s ease;
+}
+.aff-rel-enter-from,
+.aff-rel-leave-to {
+  opacity: 0;
+  transform: translateX(-6px);
 }
 </style>
