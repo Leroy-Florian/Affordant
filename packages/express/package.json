@@ -1,6 +1,6 @@
 {
   "name": "@affordant/express",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Express adapter for Affordant: send the hypermedia envelope from your controllers and build absolute action URLs from the request.",
   "license": "MIT",
   "author": "Florian Leroy",

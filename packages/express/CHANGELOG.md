@@ -1,5 +1,11 @@
 # @affordant/express
 
+## 0.3.0
+
+### Minor Changes
+
+- 7e7bc46: `sendResource` now emits every `_actions` rel as RFC 8288 `Link` header entries, not just `_self`.
+
 ## 0.2.0
 
 ### Minor Changes
