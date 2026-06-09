@@ -57,9 +57,13 @@ Offers `rel` at `href`.
 interface ActionOptions {
   method?: HateoasMethod // defaults to 'GET'
   accepts?: string       // request media type; omit for application/json
+  title?: string         // human label (button/link text)
+  fields?: ActionField[] // inputs the client should render as a form
   when?: boolean         // defaults to true; false omits the rel entirely
 }
 ```
+
+`title` and `fields` are copied onto the emitted action only when defined, just like `accepts`. They let the client render labels and forms without re-deriving anything from the rel — see [`ActionField`](/reference/contract#actionfield).
 
 `when` is where authorization lives. When `false`, the action is **not emitted**, so the client's `can(resource, rel)` returns `false`. Presence of the link *is* the permission. Calling `.action` twice with the same `rel` overrides the earlier one.
 

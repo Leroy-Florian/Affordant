@@ -50,6 +50,34 @@ describe('resource builder', () => {
     expect('accepts' in body._actions.track!).toBe(false)
   })
 
+  it('carries title when provided', () => {
+    const body = resource(order)
+      .action('cancel', '/orders/8f3a2c/cancel', { method: 'POST', title: 'Cancel order' })
+      .build()
+    expect(body._actions.cancel?.title).toBe('Cancel order')
+  })
+
+  it('omits title when not provided', () => {
+    const body = resource(order).action('track', '/t').build()
+    expect('title' in body._actions.track!).toBe(false)
+  })
+
+  it('carries fields when provided', () => {
+    const fields = [
+      { name: 'reason', type: 'text', required: true, label: 'Reason' },
+      { name: 'notify', type: 'boolean', value: false },
+    ]
+    const body = resource(order)
+      .action('cancel', '/orders/8f3a2c/cancel', { method: 'POST', fields })
+      .build()
+    expect(body._actions.cancel?.fields).toEqual(fields)
+  })
+
+  it('omits fields when not provided', () => {
+    const body = resource(order).action('track', '/t').build()
+    expect('fields' in body._actions.track!).toBe(false)
+  })
+
   it('emits the action when `when` is true', () => {
     const body = resource(order)
       .action('cancel', '/orders/8f3a2c/cancel', { method: 'POST', when: true })

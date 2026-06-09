@@ -57,9 +57,13 @@ Propose `rel` à `href`.
 interface ActionOptions {
   method?: HateoasMethod // vaut 'GET' par défaut
   accepts?: string       // type de média de la requête ; omettre pour application/json
+  title?: string         // étiquette lisible (texte du bouton/lien)
+  fields?: ActionField[] // entrées que le client doit afficher en formulaire
   when?: boolean         // vaut true par défaut ; false omet entièrement le rel
 }
 ```
+
+`title` et `fields` ne sont copiés sur l'action émise que lorsqu'ils sont définis, exactement comme `accepts`. Ils permettent au client d'afficher des étiquettes et des formulaires sans rien re-dériver depuis le rel — voir [`ActionField`](/fr/reference/contract#actionfield).
 
 `when` est là où vit l'autorisation. Quand il vaut `false`, l'action **n'est pas émise**, donc le `can(resource, rel)` du client renvoie `false`. La présence du lien *est* la permission. Appeler `.action` deux fois avec le même `rel` écrase le précédent.
 
