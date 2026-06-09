@@ -2,7 +2,8 @@
 import { describe, expect, it } from 'vitest'
 import { act, renderHook } from '@testing-library/react'
 import type { HateoasResource } from '@affordant/contract'
-import { useAffordance, useFollow } from '../src/index.js'
+import { FollowError } from 'affordant'
+import { useAffordance, useFollow, useFollowJson } from '../src/index.js'
 
 type Order = { id: string }
 
@@ -54,6 +55,41 @@ describe('useFollow', () => {
     })
 
     expect(result.current.error).toBe(boom)
+    expect(result.current.running).toBe(false)
+  })
+})
+
+describe('useFollowJson', () => {
+  it('resolves with the parsed body and clears running/error', async () => {
+    const response = new Response('{"id":"8f3a2c"}', { status: 200 })
+    const fetch: typeof globalThis.fetch = () => Promise.resolve(response)
+
+    const { result } = renderHook(() => useFollowJson<Order>())
+    expect(result.current.running).toBe(false)
+
+    let returned: Order | undefined
+    await act(async () => {
+      returned = await result.current.run(order._actions.cancel!, { fetch })
+    })
+
+    expect(returned).toEqual({ id: '8f3a2c' })
+    expect(result.current.running).toBe(false)
+    expect(result.current.error).toBeNull()
+  })
+
+  it('captures a FollowError and rethrows when the response is non-2xx', async () => {
+    const response = new Response('{"error":"nope"}', { status: 403 })
+    const fetch: typeof globalThis.fetch = () => Promise.resolve(response)
+
+    const { result } = renderHook(() => useFollowJson())
+
+    let caught: unknown
+    await act(async () => {
+      caught = await result.current.run(order._actions.cancel!, { fetch }).catch((e) => e)
+    })
+
+    expect(caught).toBeInstanceOf(FollowError)
+    expect(result.current.error).toBe(caught)
     expect(result.current.running).toBe(false)
   })
 })

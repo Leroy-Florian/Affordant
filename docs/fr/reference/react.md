@@ -52,6 +52,29 @@ const { run, running } = useFollow()
 </button>
 ```
 
+## `useFollowJson`
+
+```ts
+function useFollowJson<T = unknown>(): UseFollowJsonResult<T>
+
+interface UseFollowJsonResult<T> {
+  readonly running: boolean
+  readonly error: unknown
+  readonly run: (action: HateoasAction, init?: FollowInit) => Promise<T>
+}
+```
+
+Le pendant typé de [`useFollow`](#usefollow). Il suit `running` / `error` autour du [`followJson`](/fr/reference/api#followjson) du client ; `run` se résout avec le corps analysé, typé `T`, et relève l'erreur en cas d'échec (avec `error` renseigné) — une [`FollowError`](/fr/reference/api#followerror) pour les réponses non-2xx.
+
+```tsx
+const cancel = useAffordance(order, 'cancel')
+const { run, running, error } = useFollowJson<Order>()
+
+<button disabled={!cancel.can || running} onClick={() => run(cancel.action!, { token })}>
+  Annuler
+</button>
+```
+
 ## Utiliser Effect
 
 Il n'y a pas de point d'entrée spécifique à Effect, et il n'en faut pas : `run` (et le `follow` sous-jacent) renvoient un `Promise<Response>`, qui s'intègre à Effect avec un emballage d'une ligne — `Effect.tryPromise(() => follow(action, init))`. Affordant reste compatible avec Effect sans embarquer de dépendance Effect.

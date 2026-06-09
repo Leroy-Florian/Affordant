@@ -9,6 +9,8 @@ import {
   can,
   actionFor,
   follow,
+  followJson,
+  FollowError,
   type HateoasResource,
   type HateoasAction,
   type HateoasMethod,
@@ -128,3 +130,42 @@ type BearerToken = string | (() => string | null | undefined)
 ```
 
 Une simple chaîne, ou un **getter paresseux** invoqué au moment de la requête. Le getter permet aux couches d'authentification de distribuer des tokens éphémères sans se coupler à un framework ou à une bibliothèque d'enveloppement de secrets. Quand la valeur (ou le résultat du getter) est `null` / `undefined`, aucun en-tête `Authorization` n'est envoyé.
+
+### `followJson`
+
+```ts
+function followJson<T = unknown>(action: HateoasAction, init?: FollowInit): Promise<T>
+```
+
+Une commodité typée par-dessus [`follow`](#follow) : elle invoque l'action, puis lit la réponse en JSON. Sur un statut non-2xx, elle lève une [`FollowError`](#followerror) ; en cas de succès, elle se résout avec le JSON analysé, typé `T`. Un corps vide (par ex. `204 No Content`) se résout en `undefined`.
+
+Mêmes `FollowInit` et compatibilité Effect que `follow` — seules la forme du résultat et le comportement « lever en cas d'erreur » diffèrent.
+
+```ts
+try {
+  const order = await followJson<Order>(actionFor(res, 'self')!, { token })
+  // order est typé Order
+} catch (err) {
+  if (err instanceof FollowError) {
+    console.error(err.status, err.body)
+  }
+}
+```
+
+### `FollowError`
+
+```ts
+class FollowError extends Error {
+  readonly status: number
+  readonly response: Response
+  readonly body: unknown
+}
+```
+
+Levée par `followJson` quand la réponse n'est pas 2xx. Son `message` est `Request failed with status <status>`.
+
+| Propriété | Signification |
+|---|---|
+| `status` | Le code de statut HTTP de la réponse en échec. |
+| `response` | La `Response` brute (intacte, pour lire les en-têtes ou relire le corps). |
+| `body` | Le corps d'erreur JSON analysé, avec repli sur le texte, puis `undefined` quand aucun corps n'a pu être lu. |

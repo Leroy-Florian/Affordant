@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { follow, type HateoasAction } from '../src/index.js'
+import { follow, followJson, FollowError, type HateoasAction } from '../src/index.js'
 
 interface Captured {
   input: RequestInfo | URL
@@ -143,5 +143,49 @@ describe('follow', () => {
 
     expect(calls[0]?.input).toBe('/orders/8f3a2c')
     expect(calls[0]?.init?.method).toBe('GET')
+  })
+})
+
+describe('followJson', () => {
+  it('returns the parsed JSON body typed as T', async () => {
+    const response = new Response('{"id":"8f3a2c","status":"open"}', { status: 200 })
+    const { fetch } = captureFetch(response)
+
+    const result = await followJson<{ id: string; status: string }>(get, { fetch })
+
+    expect(result).toEqual({ id: '8f3a2c', status: 'open' })
+  })
+
+  it('throws a FollowError with status and parsed JSON body on non-2xx', async () => {
+    const response = new Response('{"error":"not found"}', { status: 404 })
+    const { fetch } = captureFetch(response)
+
+    const error = await followJson(get, { fetch }).catch((e) => e)
+
+    expect(error).toBeInstanceOf(FollowError)
+    expect(error.status).toBe(404)
+    expect(error.body).toEqual({ error: 'not found' })
+    expect(error.response).toBe(response)
+    expect(error.message).toBe('Request failed with status 404')
+  })
+
+  it('falls back to text body on non-2xx when the body is not JSON', async () => {
+    const response = new Response('boom', { status: 500 })
+    const { fetch } = captureFetch(response)
+
+    const error = await followJson(get, { fetch }).catch((e) => e)
+
+    expect(error).toBeInstanceOf(FollowError)
+    expect(error.status).toBe(500)
+    expect(error.body).toBe('boom')
+  })
+
+  it('resolves to undefined for a 204 / empty body', async () => {
+    const response = new Response(null, { status: 204 })
+    const { fetch } = captureFetch(response)
+
+    const result = await followJson(post, { fetch })
+
+    expect(result).toBeUndefined()
   })
 })

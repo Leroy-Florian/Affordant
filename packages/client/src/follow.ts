@@ -47,3 +47,59 @@ export async function follow(action: HateoasAction, init?: FollowInit): Promise<
     signal: init?.signal,
   })
 }
+
+/**
+ * Thrown by {@link followJson} when the response is not 2xx. Carries the
+ * `status`, the raw `response` (untouched, in case you need headers or to read
+ * the body again), and the parsed/raw error `body` when one could be read.
+ */
+export class FollowError extends Error {
+  readonly status: number
+  readonly response: Response
+  readonly body: unknown
+
+  constructor(status: number, response: Response, body: unknown) {
+    super(`Request failed with status ${status}`)
+    this.name = 'FollowError'
+    this.status = status
+    this.response = response
+    this.body = body
+  }
+}
+
+/**
+ * Typed convenience over {@link follow}: invokes the action, then reads the
+ * response as JSON. On a non-2xx status it throws a {@link FollowError} (with
+ * the parsed JSON error body, falling back to text, then `undefined`). On
+ * success it resolves with the parsed JSON typed as `T`; an empty body (e.g.
+ * `204 No Content`) resolves to `undefined as T`.
+ *
+ * ```ts
+ * const order = await followJson<Order>(actionFor(res, 'self')!, { token })
+ * ```
+ */
+export async function followJson<T = unknown>(
+  action: HateoasAction,
+  init?: FollowInit,
+): Promise<T> {
+  const res = await follow(action, init)
+
+  if (!res.ok) {
+    let body: unknown
+    try {
+      body = await res.clone().json()
+    } catch {
+      try {
+        const text = await res.clone().text()
+        body = text === '' ? undefined : text
+      } catch {
+        body = undefined
+      }
+    }
+    throw new FollowError(res.status, res, body)
+  }
+
+  const text = await res.text()
+  if (text === '') return undefined as T
+  return JSON.parse(text) as T
+}
