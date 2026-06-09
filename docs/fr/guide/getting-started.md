@@ -52,6 +52,7 @@ Voir [les paquets](/fr/guide/packages) pour la carte complète, ou continuez sim
 
 ## Étapes suivantes
 
+- Comprenez [pourquoi le niveau 3 de REST](/fr/guide/why-level-3) vaut la peine d'être atteint, et ce que cela change pour votre frontend.
 - Parcourez [les paquets](/fr/guide/packages) et comment ils s'imbriquent.
 - Comprenez [le contrat du fil](/fr/guide/wire-contract) émis par le serveur.
 - Voir [l'utilisation avec un framework](/fr/guide/frameworks) pour React, Vue, Svelte et vanilla.

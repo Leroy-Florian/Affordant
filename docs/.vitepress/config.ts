@@ -69,6 +69,7 @@ export default defineConfig({
               text: 'Guide',
               items: [
                 { text: 'Getting started', link: '/guide/getting-started' },
+                { text: 'Why REST level 3', link: '/guide/why-level-3' },
                 { text: 'The packages', link: '/guide/packages' },
                 { text: 'The wire contract', link: '/guide/wire-contract' },
                 { text: 'Framework usage', link: '/guide/frameworks' },
@@ -113,6 +114,7 @@ export default defineConfig({
               text: 'Guide',
               items: [
                 { text: 'Démarrage', link: '/fr/guide/getting-started' },
+                { text: 'Pourquoi le niveau 3 de REST', link: '/fr/guide/why-level-3' },
                 { text: 'Les paquets', link: '/fr/guide/packages' },
                 { text: 'Le contrat du fil', link: '/fr/guide/wire-contract' },
                 { text: 'Utilisation avec un framework', link: '/fr/guide/frameworks' },

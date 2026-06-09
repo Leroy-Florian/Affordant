@@ -52,6 +52,7 @@ See [the packages](/guide/packages) for the whole map, or just keep using the va
 
 ## Next steps
 
+- Understand [why REST level 3](/guide/why-level-3) is worth reaching, and what it changes for your frontend.
 - Tour [the packages](/guide/packages) and how they fit together.
 - Understand [the wire contract](/guide/wire-contract) the server emits.
 - See [framework usage](/guide/frameworks) for React, Vue, Svelte, and vanilla.

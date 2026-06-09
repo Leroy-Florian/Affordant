@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: Affordant
-  text: Affordance-first hypermedia, both sides of the wire
-  tagline: Stop re-implementing your authorization in the frontend. The server declares the actions it offers; your UI renders off them.
+  text: Reach REST level 3, both sides of the wire
+  tagline: Hypermedia controls (HATEOAS) are the REST maturity level most teams never reach. Affordant gets you there — the server declares the actions it offers; your UI renders off them, with no authorization re-implemented in the frontend.
   actions:
     - theme: brand
       text: Get started

@@ -2,7 +2,7 @@
 
 **English** · [Français](README.fr.md)
 
-**Affordance-first hypermedia (HATEOAS), both sides of the wire.** Stop re-implementing your authorization rules in the frontend — let the actions the server offers drive your UI, and let the server declare those actions once.
+**Finally reach REST level 3 — hypermedia (HATEOAS), both sides of the wire.** Level 3 is the REST maturity level most teams skip. Stop re-implementing your authorization rules in the frontend — let the actions the server offers drive your UI, and let the server declare those actions once.
 
 The server enriches each response with `_self` and `_actions`; the **presence of a rel encodes permission**. The client renders a button off the *presence* of the link — it never re-derives "can this user do X?".
 
