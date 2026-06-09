@@ -2,17 +2,18 @@
 
 Affordant is a small family in one npm-workspaces monorepo. They share a single wire contract and stay symmetric across the wire: the server builds what the client consumes.
 
-![How the Affordant packages fit together: @affordant/contract feeds both the server and the client; @affordant/server builds the _self / _actions envelope, which the affordant client reads; @affordant/express and @affordant/react sit alongside the server and client respectively.](/diagrams/packages.svg)
+![How the Affordant packages fit together: @affordant/contract feeds both the server and the client; @affordant/server builds the _self / _actions envelope, which the affordant client reads; @affordant/express sits alongside the server, while @affordant/react and @affordant/vue sit alongside the client.](/diagrams/packages.svg)
 
 | Package | Side | Depends on | What it does |
 |---|---|---|---|
 | [`@affordant/contract`](/reference/contract) | shared | — | The wire-contract types. Zero runtime, zero deps. Everything else depends on it. |
 | [`affordant`](/reference/api) | client | contract | `can` / `actionFor` / `follow`. Zero runtime deps — runs anywhere `fetch` exists. |
 | [`@affordant/react`](/reference/react) | client | contract, affordant, *react* | React adapter: gate UI on affordances and follow them with hooks. |
+| [`@affordant/vue`](/reference/vue) | client | contract, affordant, *vue* | Vue adapter: gate UI on affordances and follow them with composables. |
 | [`@affordant/server`](/reference/server) | server | contract | A builder for the `_self` / `_actions` envelope. Framework-agnostic. |
 | `@affordant/express` | server | server, *express* | Express adapter: send the envelope, build URLs from the request. |
 
-Italic dependencies are **peer** dependencies — you bring your own React / Express. The client core (`affordant`) and the server core (`@affordant/server`) carry no runtime dependencies at all.
+Italic dependencies are **peer** dependencies — you bring your own React / Vue / Express. The client core (`affordant`) and the server core (`@affordant/server`) carry no runtime dependencies at all.
 
 ## On Effect (and other effect systems)
 

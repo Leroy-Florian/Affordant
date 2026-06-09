@@ -5,6 +5,7 @@ flowchart LR
   client["affordant<br/>(can / actionFor / follow)"]
   express["@affordant/express"]
   react["@affordant/react (hooks)"]
+  vue["@affordant/vue (composables)"]
 
   contract -.-> server
   contract -.-> client
@@ -12,3 +13,4 @@ flowchart LR
   envelope -- reads --> client
   server --- express
   client --- react
+  client --- vue

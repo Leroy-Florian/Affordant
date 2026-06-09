@@ -22,7 +22,7 @@ features:
   - title: One contract, both sides
     details: The server's build() produces exactly what the client's can() consumes. A shared types package keeps producer and consumer from ever drifting.
   - title: Zero-dependency cores
-    details: The client and server are plain functions over plain data, no runtime dependencies. An optional React adapter adds hooks when you want them.
+    details: The client and server are plain functions over plain data, no runtime dependencies. Optional React and Vue adapters add hooks and composables when you want them.
 ---
 
 ## The idea in thirty seconds

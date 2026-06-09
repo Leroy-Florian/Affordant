@@ -22,7 +22,7 @@ features:
   - title: Un seul contrat, des deux côtés
     details: Le build() du serveur produit exactement ce que le can() du client consomme. Un paquet de types partagé empêche producteur et consommateur de jamais diverger.
   - title: Des cœurs sans dépendances
-    details: Le client et le serveur sont de simples fonctions sur de simples données, sans dépendances d'exécution. Un adaptateur React optionnel ajoute des hooks quand vous en voulez.
+    details: Le client et le serveur sont de simples fonctions sur de simples données, sans dépendances d'exécution. Des adaptateurs React et Vue optionnels ajoutent des hooks et des composables quand vous en voulez.
 ---
 
 ## L'idée en trente secondes

@@ -78,10 +78,38 @@ function CancelButton({ order }) {
 }
 ```
 
+## Vue, avec des composables (optionnel)
+
+Si vous voulez de l'ergonomie dans Vue, [`@affordant/vue`](/fr/reference/vue) emballe les mêmes appels en composables. C'est opt-in ; `affordant` n'en dépend jamais. `useAffordance` renvoie des `computed` réactifs, donc le conditionnement reste synchrone au fur et à mesure que vos données se chargent ou changent.
+
+```sh
+npm install @affordant/vue
+```
+
+```vue
+<script setup lang="ts">
+import { useAffordance, useFollow } from '@affordant/vue'
+
+const props = defineProps<{ order: HateoasResource<Order> }>()
+const cancel = useAffordance(() => props.order, 'cancel')
+const { run, running } = useFollow()
+</script>
+
+<template>
+  <button
+    v-if="cancel.can.value"
+    :disabled="running"
+    @click="run(cancel.action.value!, { token })"
+  >
+    Annuler la commande
+  </button>
+</template>
+```
+
 ## Utiliser Effect
 
 `follow` est une simple fonction qui renvoie une promesse, donc elle s'intègre à Effect (ou tout autre système d'effets) avec un emballage d'une ligne — `Effect.tryPromise(() => follow(action, init))`. Cette interopérabilité, c'est à vous de l'ajouter si vous le voulez ; Affordant n'embarque jamais de dépendance Effect.
 
-## Vue / Svelte
+## Svelte
 
-Aucun paquet d'adaptateur n'existe encore pour Vue ou Svelte — et vous n'en avez pas besoin. Les extraits vanilla ci-dessus disent tout. Si une ergonomie de type hooks y était souhaitée elle aussi, elle serait livrée comme ses propres paquets opt-in, jamais comme une dépendance du cœur.
+Aucun paquet d'adaptateur n'existe encore pour Svelte — et vous n'en avez pas besoin. Les extraits vanilla ci-dessus disent tout. Si une ergonomie de type hooks y était souhaitée elle aussi, elle serait livrée comme son propre paquet opt-in, jamais comme une dépendance du cœur.

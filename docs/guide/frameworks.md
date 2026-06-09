@@ -78,10 +78,38 @@ function CancelButton({ order }) {
 }
 ```
 
+## Vue, with composables (optional)
+
+If you want ergonomics in Vue, [`@affordant/vue`](/reference/vue) wraps the same calls as composables. It is opt-in; `affordant` never depends on it. `useAffordance` returns reactive `computed`s, so the gating stays in sync as your data loads or changes.
+
+```sh
+npm install @affordant/vue
+```
+
+```vue
+<script setup lang="ts">
+import { useAffordance, useFollow } from '@affordant/vue'
+
+const props = defineProps<{ order: HateoasResource<Order> }>()
+const cancel = useAffordance(() => props.order, 'cancel')
+const { run, running } = useFollow()
+</script>
+
+<template>
+  <button
+    v-if="cancel.can.value"
+    :disabled="running"
+    @click="run(cancel.action.value!, { token })"
+  >
+    Cancel order
+  </button>
+</template>
+```
+
 ## Using Effect
 
 `follow` is a plain promise-returning function, so it drops into Effect (or any effect system) with a one-line wrap — `Effect.tryPromise(() => follow(action, init))`. That interop is yours to add if you want it; Affordant never ships an Effect dependency.
 
-## Vue / Svelte
+## Svelte
 
-No adapter packages exist for Vue or Svelte yet — and you don't need them. The vanilla snippets above are the whole story. If hooks-style ergonomics are wanted there too, they'd ship as their own opt-in packages, never as a dependency of the core.
+No adapter package exists for Svelte yet — and you don't need one. The vanilla snippets above are the whole story. If hooks-style ergonomics are wanted there too, they'd ship as their own opt-in package, never as a dependency of the core.
