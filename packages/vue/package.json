@@ -1,6 +1,6 @@
 {
   "name": "@affordant/vue",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Vue adapter for Affordant: gate UI on the server's affordances and follow them with composables.",
   "license": "MIT",
   "author": "Florian Leroy",
