@@ -56,6 +56,32 @@ This is the factual payoff. Crossing to level 3 changes how a frontend is built 
 
 The trade is real but small: responses carry a little more metadata, and the frontend gives up *knowing* the API in exchange for *reading* it. In return you delete an entire category of front/back drift bugs.
 
+## The API discovers itself
+
+There's a second payoff, beyond the frontend: the API becomes **self-describing**. A caller doesn't need an out-of-band map of every endpoint — it fetches one resource and reads the actions attached to it. The response *is* the documentation of what's possible next.
+
+```jsonc
+// GET /orders/8f3a2c
+{
+  "id": "8f3a2c",
+  "status": "pending",
+  "_self":    { "href": "/orders/8f3a2c",          "method": "GET" },
+  "_actions": {
+    "track":  { "href": "/orders/8f3a2c/tracking", "method": "GET" },
+    "cancel": { "href": "/orders/8f3a2c/cancel",   "method": "POST" },
+    "refund": { "href": "/orders/8f3a2c/refund",   "method": "POST" }
+  }
+}
+```
+
+From that single call, a consumer — human or machine — learns the available transitions, where each one lives, and how to invoke it. No spec to fetch on the side, no tribal knowledge about which verb goes where. Follow a link, get the next resource, read *its* actions, repeat: the API is explored by traversal — the way you browse a site by following links rather than memorising URLs.
+
+That's concrete leverage:
+
+- **Onboarding shrinks.** A new frontend developer reads live responses, not a separate spec that may already be stale.
+- **The contract can't lie.** The actions a caller sees are computed from real state, so the "documentation" is always in sync with what the server will actually accept.
+- **Clients can stay generic.** Tooling, admin panels, and tests can drive the API purely by following rels, without hardcoding the route table.
+
 ## Where Affordant fits
 
 Affordant is the machinery for level 3 on both sides of the wire, over [one shared contract](/guide/wire-contract):

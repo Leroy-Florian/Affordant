@@ -56,6 +56,32 @@ C'est le bénéfice factuel. Franchir le cap du niveau 3 change la façon dont u
 
 Le compromis est réel mais modeste : les réponses portent un peu plus de métadonnées, et le frontend renonce à *connaître* l'API en échange de la *lire*. En retour, vous supprimez toute une catégorie de bugs de divergence front/back.
 
+## L'API se découvre d'elle-même
+
+Il y a un second bénéfice, au-delà du frontend : l'API devient **auto-descriptive**. Un appelant n'a pas besoin d'une carte hors-bande de tous les endpoints — il récupère une ressource et lit les actions qui y sont attachées. La réponse *est* la documentation de ce qui est possible ensuite.
+
+```jsonc
+// GET /orders/8f3a2c
+{
+  "id": "8f3a2c",
+  "status": "pending",
+  "_self":    { "href": "/orders/8f3a2c",          "method": "GET" },
+  "_actions": {
+    "track":  { "href": "/orders/8f3a2c/tracking", "method": "GET" },
+    "cancel": { "href": "/orders/8f3a2c/cancel",   "method": "POST" },
+    "refund": { "href": "/orders/8f3a2c/refund",   "method": "POST" }
+  }
+}
+```
+
+À partir de ce seul appel, un consommateur — humain ou machine — apprend les transitions disponibles, où chacune se trouve et comment l'invoquer. Aucune spec à récupérer à côté, aucun savoir tribal sur le verbe qui va avec tel endpoint. Suivre un lien, obtenir la ressource suivante, lire *ses* actions, recommencer : on explore l'API par traversée — comme on parcourt un site en suivant des liens plutôt qu'en mémorisant des URL.
+
+C'est un levier concret :
+
+- **L'onboarding se réduit.** Un nouveau développeur frontend lit des réponses réelles, pas une spec séparée déjà potentiellement obsolète.
+- **Le contrat ne peut pas mentir.** Les actions vues par un appelant sont calculées depuis l'état réel ; la « documentation » est donc toujours synchronisée avec ce que le serveur acceptera vraiment.
+- **Les clients peuvent rester génériques.** Outils, panneaux d'administration et tests peuvent piloter l'API uniquement en suivant les rels, sans coder en dur la table de routage.
+
 ## Où Affordant intervient
 
 Affordant est la mécanique du niveau 3 des deux côtés du fil, sur [un seul contrat partagé](/fr/guide/wire-contract) :
