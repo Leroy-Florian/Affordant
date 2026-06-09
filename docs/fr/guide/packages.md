@@ -2,17 +2,18 @@
 
 Affordant est une petite famille dans un unique monorepo npm-workspaces. Ils partagent un seul contrat de fil et restent symétriques de part et d'autre : le serveur construit ce que le client consomme.
 
-![Comment s'imbriquent les paquets Affordant : @affordant/contract alimente le serveur et le client ; @affordant/server construit l'enveloppe _self / _actions, que le client affordant lit ; @affordant/express et @affordant/react se placent respectivement aux côtés du serveur et du client.](/diagrams/packages.svg)
+![Comment s'imbriquent les paquets Affordant : @affordant/contract alimente le serveur et le client ; @affordant/server construit l'enveloppe _self / _actions, que le client affordant lit ; @affordant/express se place aux côtés du serveur, tandis que @affordant/react et @affordant/vue se placent aux côtés du client.](/diagrams/packages.svg)
 
 | Paquet | Côté | Dépend de | Ce qu'il fait |
 |---|---|---|---|
 | [`@affordant/contract`](/fr/reference/contract) | partagé | — | Les types du contrat de fil. Zéro exécution, zéro dépendance. Tout le reste en dépend. |
 | [`affordant`](/fr/reference/api) | client | contract | `can` / `actionFor` / `follow`. Zéro dépendance d'exécution — fonctionne partout où `fetch` existe. |
 | [`@affordant/react`](/fr/reference/react) | client | contract, affordant, *react* | Adaptateur React : conditionnez l'UI aux affordances et suivez-les avec des hooks. |
+| [`@affordant/vue`](/fr/reference/vue) | client | contract, affordant, *vue* | Adaptateur Vue : conditionnez l'UI aux affordances et suivez-les avec des composables. |
 | [`@affordant/server`](/fr/reference/server) | serveur | contract | Un constructeur pour l'enveloppe `_self` / `_actions`. Indépendant du framework. |
 | `@affordant/express` | serveur | server, *express* | Adaptateur Express : envoie l'enveloppe, construit les URL à partir de la requête. |
 
-Les dépendances en italique sont des dépendances **peer** — vous apportez votre propre React / Express. Le cœur client (`affordant`) et le cœur serveur (`@affordant/server`) ne portent aucune dépendance d'exécution.
+Les dépendances en italique sont des dépendances **peer** — vous apportez votre propre React / Vue / Express. Le cœur client (`affordant`) et le cœur serveur (`@affordant/server`) ne portent aucune dépendance d'exécution.
 
 ## À propos d'Effect (et des autres systèmes d'effets)
 

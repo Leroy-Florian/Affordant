@@ -5,7 +5,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'Affordant',
   description:
-    'Affordance-first hypermedia (HATEOAS), both sides of the wire. A zero-dependency client, a server-side envelope builder, and a React adapter — all over one shared contract.',
+    'Affordance-first hypermedia (HATEOAS), both sides of the wire. A zero-dependency client, a server-side envelope builder, and React and Vue adapters — all over one shared contract.',
   // Deployed to https://<user>.github.io/Affordant/ — change to '/' for a custom domain.
   base: '/Affordant/',
   cleanUrls: true,
@@ -102,7 +102,7 @@ export default defineConfig({
       label: 'Français',
       lang: 'fr-FR',
       description:
-        "Hypermédia orienté affordances (HATEOAS), des deux côtés du fil. Un client sans dépendances, un constructeur d'enveloppe côté serveur et un adaptateur React — le tout sur un contrat partagé.",
+        "Hypermédia orienté affordances (HATEOAS), des deux côtés du fil. Un client sans dépendances, un constructeur d'enveloppe côté serveur et des adaptateurs React et Vue — le tout sur un contrat partagé.",
       themeConfig: {
         nav: [
           { text: 'Guide', link: '/fr/guide/getting-started' },
