@@ -30,12 +30,26 @@ export function urlFor(req: RequestLike, path: string): string {
 
 /**
  * Serialize a resource builder onto an Express response as the Affordant
- * envelope: emits the `_self` link as a `Link: <href>; rel="self"` header and
- * sends the body as JSON. Returns the response for chaining.
+ * envelope. Emits every link in the envelope as a combined RFC 8288 `Link`
+ * header — `_self` as `rel="self"` first (when present), then each `_actions`
+ * entry as its own `rel`, in insertion order — and sends the body as JSON
+ * unchanged. The header is only set when at least one link exists. Returns the
+ * response for chaining.
+ *
+ * @example
+ * // Link: </orders/8f3a2c>; rel="self", </orders/8f3a2c/cancel>; rel="cancel"
+ * sendResource(res, resource(order).self('/orders/8f3a2c').action('cancel', '/orders/8f3a2c/cancel'))
  */
 export function sendResource<R extends ResponseLike, T>(res: R, builder: ResourceBuilder<T>): R {
   const body = builder.build()
-  if (body._self) res.setHeader('Link', `<${body._self.href}>; rel="self"`)
+
+  const links: string[] = []
+  if (body._self) links.push(`<${body._self.href}>; rel="self"`)
+  for (const [rel, action] of Object.entries(body._actions)) {
+    links.push(`<${action.href}>; rel="${rel}"`)
+  }
+  if (links.length > 0) res.setHeader('Link', links.join(', '))
+
   res.json(body)
   return res
 }
