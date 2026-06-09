@@ -30,6 +30,7 @@ Ce dépôt est un monorepo npm-workspaces. Un seul contrat partagé, symétrique
 | [`@affordant/contract`](packages/contract) | partagé | Les types du contrat de fil. Zéro exécution, zéro dépendance. Tout le reste en dépend. |
 | [`affordant`](packages/client) | client | `can` / `actionFor` / `follow` — conditionne l'UI à ce que le serveur propose. Zéro dépendance d'exécution. |
 | [`@affordant/react`](packages/react) | client | Adaptateur React : conditionne l'UI aux affordances et les suit avec des hooks. |
+| [`@affordant/vue`](packages/vue) | client | Adaptateur Vue : conditionne l'UI aux affordances et les suit avec des composables. |
 | [`@affordant/server`](packages/server) | serveur | Un constructeur qui émet l'enveloppe `_self` / `_actions`. Indépendant du framework. |
 | [`@affordant/express`](packages/express) | serveur | Adaptateur Express : envoie l'enveloppe et construit les URL à partir de la requête. |
 
