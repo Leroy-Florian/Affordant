@@ -79,4 +79,44 @@ resource({ id: '8f3a2c', status: 'pending' })
 // → { id: '8f3a2c', status: 'pending', _self: { href: '/orders/8f3a2c', method: 'GET' }, _actions: {} }
 ```
 
+## `collection`
+
+```ts
+function collection<T extends object>(items: HateoasResource<T>[]): CollectionBuilder<T>
+```
+
+The list-shaped sibling of `resource`. You build each member with `resource()` first, then wrap the array. Pagination links are plain actions: emit them with `.action('next', href)`, `.action('prev', href)`, `.action('first', href)`, and `.action('last', href)`.
+
+```ts
+import { collection, resource } from '@affordant/server'
+
+collection(orders.map((o) => resource(o).self(route('orders.show', o.id)).build()))
+  .self(route('orders.index'))
+  .action('next', route('orders.index', { page: page + 1 }))
+  .action('prev', route('orders.index', { page: page - 1 }), { when: page > 0 })
+  .page({ total: 42, size: 20, number: page })
+  .build()
+```
+
+## `CollectionBuilder<T>`
+
+```ts
+interface CollectionBuilder<T> {
+  self(href: string, opts?: SelfOptions): CollectionBuilder<T>
+  action(rel: string, href: string, opts?: ActionOptions): CollectionBuilder<T>
+  page(info: PageInfo): CollectionBuilder<T>
+  build(): HateoasCollection<T>
+}
+```
+
+`.self` and `.action` mirror `ResourceBuilder` exactly — same `SelfOptions` / `ActionOptions`, including `when` for authorization-as-visibility. `.page(info)` attaches optional pagination metadata.
+
+### `.build()`
+
+```ts
+build(): HateoasCollection<T>
+```
+
+Returns the enriched wire collection. `items` is carried through untouched, `_actions` is always present (possibly empty), and `_self` / `page` appear only when set.
+
 See [server side](/guide/server-side) for the rules that make it worth it.

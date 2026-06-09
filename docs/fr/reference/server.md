@@ -79,4 +79,44 @@ resource({ id: '8f3a2c', status: 'pending' })
 // → { id: '8f3a2c', status: 'pending', _self: { href: '/orders/8f3a2c', method: 'GET' }, _actions: {} }
 ```
 
+## `collection`
+
+```ts
+function collection<T extends object>(items: HateoasResource<T>[]): CollectionBuilder<T>
+```
+
+Le pendant en forme de liste de `resource`. Vous construisez d'abord chaque membre avec `resource()`, puis vous enveloppez le tableau. Les liens de pagination sont de simples actions : émettez-les avec `.action('next', href)`, `.action('prev', href)`, `.action('first', href)` et `.action('last', href)`.
+
+```ts
+import { collection, resource } from '@affordant/server'
+
+collection(orders.map((o) => resource(o).self(route('orders.show', o.id)).build()))
+  .self(route('orders.index'))
+  .action('next', route('orders.index', { page: page + 1 }))
+  .action('prev', route('orders.index', { page: page - 1 }), { when: page > 0 })
+  .page({ total: 42, size: 20, number: page })
+  .build()
+```
+
+## `CollectionBuilder<T>`
+
+```ts
+interface CollectionBuilder<T> {
+  self(href: string, opts?: SelfOptions): CollectionBuilder<T>
+  action(rel: string, href: string, opts?: ActionOptions): CollectionBuilder<T>
+  page(info: PageInfo): CollectionBuilder<T>
+  build(): HateoasCollection<T>
+}
+```
+
+`.self` et `.action` reflètent exactement `ResourceBuilder` — mêmes `SelfOptions` / `ActionOptions`, y compris `when` pour l'autorisation-comme-visibilité. `.page(info)` attache des métadonnées de pagination optionnelles.
+
+### `.build()`
+
+```ts
+build(): HateoasCollection<T>
+```
+
+Renvoie la collection de fil enrichie. `items` est transporté tel quel, `_actions` est toujours présent (éventuellement vide), et `_self` / `page` n'apparaissent que lorsqu'ils sont définis.
+
 Voir [côté serveur](/fr/guide/server-side) pour les règles qui en font une démarche qui en vaut la peine.

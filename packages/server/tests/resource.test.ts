@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { resource } from '../src/index.js'
+import { collection, resource } from '../src/index.js'
 
 type Order = { id: string; total: number; status: string }
 
@@ -79,5 +79,47 @@ describe('resource builder', () => {
 
     expect(Object.keys(body._actions)).toEqual(['track', 'cancel'])
     expect(body._self).toBeDefined()
+  })
+})
+
+describe('collection builder', () => {
+  const items = [
+    resource({ id: 'a', total: 1, status: 'pending' }).self('/orders/a').build(),
+    resource({ id: 'b', total: 2, status: 'pending' }).self('/orders/b').build(),
+  ]
+
+  it('passes the built items through untouched', () => {
+    const body = collection(items).build()
+    expect(body.items).toBe(items)
+    expect(body.items[0]?.id).toBe('a')
+    expect(body.items[0]?._self).toEqual({ href: '/orders/a', method: 'GET' })
+  })
+
+  it('always emits an _actions map, empty by default', () => {
+    const body = collection(items).build()
+    expect(body._actions).toEqual({})
+    expect(body._self).toBeUndefined()
+    expect(body.page).toBeUndefined()
+  })
+
+  it('emits pagination rels via .action()', () => {
+    const body = collection(items)
+      .self('/orders')
+      .action('next', '/orders?page=2')
+      .action('prev', '/orders?page=0', { when: false })
+      .action('first', '/orders?page=0')
+      .action('last', '/orders?page=4')
+      .build()
+
+    expect(body._self).toEqual({ href: '/orders', method: 'GET' })
+    expect(body._actions.next).toEqual({ href: '/orders?page=2', method: 'GET' })
+    expect(body._actions.first).toEqual({ href: '/orders?page=0', method: 'GET' })
+    expect(body._actions.last).toEqual({ href: '/orders?page=4', method: 'GET' })
+    expect('prev' in body._actions).toBe(false)
+  })
+
+  it('carries page metadata when set', () => {
+    const body = collection(items).page({ total: 42, size: 20, number: 1 }).build()
+    expect(body.page).toEqual({ total: 42, size: 20, number: 1 })
   })
 })

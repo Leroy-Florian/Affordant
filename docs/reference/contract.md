@@ -43,4 +43,29 @@ type HateoasResource<T> = T & {
 
 Your resource `T`, enriched with hypermedia controls. `_actions` maps a link relation (rel) to the action the server is currently offering. An absent rel means the action is not available to the caller right now.
 
+## `PageInfo`
+
+```ts
+interface PageInfo {
+  total?: number
+  size?: number
+  number?: number
+}
+```
+
+Optional pagination metadata for a collection: the `total` number of items across all pages, the page `size`, and the zero-based `number` of the current page. Emit only what the server actually knows.
+
+## `HateoasCollection<T>`
+
+```ts
+interface HateoasCollection<T> {
+  items: HateoasResource<T>[]
+  _self?: HateoasAction
+  _actions: Record<string, HateoasAction>
+  page?: PageInfo
+}
+```
+
+A list of resources, enriched with hypermedia controls. `items` holds the already-enriched members. `_actions` carries collection-level affordances; pagination links live here under the standard rels `next`, `prev`, `first`, and `last`. An absent rel means that page is not available (e.g. no `next` on the last page). `page` surfaces optional pagination metadata.
+
 See [the wire contract](/guide/wire-contract) for the design behind these types.
