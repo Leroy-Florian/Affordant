@@ -45,13 +45,20 @@ async function reset() {
   await load()
 }
 
-// Body without _actions; the cancel rel is rendered separately so it can
-// animate in and out as the server offers or withdraws it.
+// Body without _actions; the cancel rel is rendered separately (below) so it
+// can animate in and out as the server offers or withdraws it.
 const bodyJson = computed(() => {
   if (!order.value) return ''
   const { _actions, ...rest } = order.value
-  return JSON.stringify(rest, null, 2).slice(0, -2) + ',\n  "_actions": {'
+  const lines = JSON.stringify(rest, null, 2).split('\n')
+  lines.pop() // drop the root "}" — _actions and the close are appended in the template
+  lines[lines.length - 1] += ',' // comma after the last body member
+  lines.push('') // trailing newline so "_actions" starts on its own line
+  return lines.join('\n')
 })
+
+// 0 or 1 rel, but an array keeps the template identical to the Playground's.
+const offered = computed(() => (cancel.can.value ? ['cancel'] : []))
 
 watch(owner, load)
 onMounted(load)
@@ -85,9 +92,7 @@ onMounted(load)
         <p v-else class="aff-empty">{{ t.none }}</p>
       </div>
 
-      <pre class="aff-json"><code>{{ bodyJson }}</code><Transition name="aff-rel"><code v-if="cancel.can.value" class="aff-rel">
-    "cancel": { "href": "…/cancel", "method": "POST" }</code></Transition><code>
-  }
+      <pre class="aff-json"><code>{{ bodyJson }}  "_actions": {</code><TransitionGroup name="aff-rel" tag="div" class="aff-rels"><div v-for="rel in offered" :key="rel" class="aff-rel"><code>    "{{ rel }}": </code><code class="aff-rel-val">{ "href": "…/{{ rel }}", "method": "POST" }</code></div></TransitionGroup><code>  }
 }</code></pre>
     </div>
   </div>
@@ -202,10 +207,16 @@ onMounted(load)
   padding: 0;
   white-space: pre;
 }
+.aff-rels {
+  display: block;
+}
 .aff-rel {
-  display: inline-block;
+  display: block;
   border-radius: 5px;
   background: var(--vp-c-brand-soft);
+}
+.aff-rel-val {
+  color: var(--vp-c-text-2);
 }
 .aff-rel-enter-active,
 .aff-rel-leave-active {

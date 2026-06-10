@@ -25,6 +25,12 @@ Affordant fonctionne sur une convention simple : le serveur enrichit chaque ress
 
 Le propriétaire obtient un lien `cancel` ; tous les autres ne l'ont tout simplement pas. Le frontend affiche le bouton d'annulation à partir de la *présence* de ce lien — il ne redérive jamais « cet utilisateur peut-il annuler ? ».
 
+Regardez l'enveloppe changer d'elle-même. Changez d'appelant ci-dessous et le bloc `_actions` gagne ou perd `cancel` — exactement la différence entre les deux réponses ci-dessus, en direct :
+
+<AffordanceDemo />
+
+Pour l'enveloppe complète sur tout un cycle de vie et plusieurs rels, voyez le [Playground](/fr/playground).
+
 ## La forme, typée
 
 ```ts

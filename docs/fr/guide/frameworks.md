@@ -106,6 +106,10 @@ const { run, running } = useFollow()
 </template>
 ```
 
+La démo ci-dessous est construite avec exactement ces composables — `useAffordance` conditionne le bouton, `useFollow` l'invoque. Changez d'appelant et le bouton suit l'affordance `cancel` du serveur, sans aucune vérification de permission côté client :
+
+<AffordanceDemo />
+
 ## Utiliser Effect
 
 `follow` est une simple fonction qui renvoie une promesse, donc elle s'intègre à Effect (ou tout autre système d'effets) avec un emballage d'une ligne — `Effect.tryPromise(() => follow(action, init))`. Cette interopérabilité, c'est à vous de l'ajouter si vous le voulez ; Affordant n'embarque jamais de dépendance Effect.

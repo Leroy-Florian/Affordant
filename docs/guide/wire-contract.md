@@ -25,6 +25,12 @@ Affordant works against one simple convention: the server enriches each resource
 
 The owner gets a `cancel` link; everyone else simply doesn't. The frontend renders the cancel button off the *presence* of that link — it never re-derives "can this user cancel?".
 
+Watch the envelope itself change. Toggle the caller below and the `_actions` block gains or loses `cancel` — the exact difference between the two responses above, live:
+
+<AffordanceDemo />
+
+For the full envelope across a whole lifecycle and several rels, see the [Playground](/playground).
+
 ## The shape, typed
 
 ```ts

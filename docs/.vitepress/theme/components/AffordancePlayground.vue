@@ -100,7 +100,9 @@ const bodyJson = computed(() => {
   if (!order.value) return ''
   const { _actions, ...rest } = order.value
   const lines = JSON.stringify(rest, null, 2).split('\n')
-  lines[lines.length - 1] = lines[lines.length - 1] + ',' // trailing comma before _actions
+  lines.pop() // drop the root "}" — _actions and the close are appended in the template
+  lines[lines.length - 1] += ',' // comma after the last body member
+  lines.push('') // trailing newline so "_actions" starts on its own line
   return lines.join('\n')
 })
 
@@ -153,7 +155,7 @@ onMounted(load)
 
       <div class="pg-wire">
         <div class="pg-wire-label">{{ ui.wire }}</div>
-        <pre class="pg-json"><code>{{ bodyJson }}</code>  <code>"_actions": {</code><TransitionGroup name="pg-rel" tag="div" class="pg-rels"><div v-for="rel in offered" :key="rel" class="pg-rel"><code>    "{{ rel }}": </code><code class="pg-rel-val">{ "href": "…/{{ rel }}", "method": "{{ order._actions[rel].method }}" }</code></div></TransitionGroup><code>  }
+        <pre class="pg-json"><code>{{ bodyJson }}  "_actions": {</code><TransitionGroup name="pg-rel" tag="div" class="pg-rels"><div v-for="rel in offered" :key="rel" class="pg-rel"><code>    "{{ rel }}": </code><code class="pg-rel-val">{ "href": "…/{{ rel }}", "method": "{{ order._actions[rel].method }}" }</code></div></TransitionGroup><code>  }
 }</code></pre>
       </div>
     </div>

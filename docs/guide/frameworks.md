@@ -106,6 +106,10 @@ const { run, running } = useFollow()
 </template>
 ```
 
+The demo below is built with exactly those composables — `useAffordance` gates the button, `useFollow` invokes it. Toggle the caller and the button follows the server's `cancel` affordance, with no client-side permission check:
+
+<AffordanceDemo />
+
 ## Using Effect
 
 `follow` is a plain promise-returning function, so it drops into Effect (or any effect system) with a one-line wrap — `Effect.tryPromise(() => follow(action, init))`. That interop is yours to add if you want it; Affordant never ships an Effect dependency.
